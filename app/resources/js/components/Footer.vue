@@ -3,7 +3,7 @@
         <div class="container mx-auto px-4">
             <div class="grid md:grid-cols-4 gap-8">
                 <div>
-                    <a href="#" class="text-2xl font-['Pacifico'] text-white mb-4 inline-block">Медицинская информационная система</a>
+                    <a href="#" class="text-2xl font-['Pacifico'] text-white mb-4 inline-block">МедИнформСистем</a>
                     <p class="text-gray-400 mb-4">Современная медицина для вашего здоровья</p>
                     <div class="flex space-x-4">
                         <a href="#" class="text-gray-400 hover:text-white transition">
@@ -63,7 +63,7 @@
                 </div>
             </div>
             <div class="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-gray-400 mb-4 md:mb-0">© 2025 Медицинская информационная система. Все права защищены.</p>
+                <p class="text-gray-400 mb-4 md:mb-0">© 2025 МедИнформСистем. Все права защищены.</p>
                 <div class="flex space-x-4">
                     <a href="#" class="text-gray-400 hover:text-white transition">Политика конфиденциальности</a>
                     <a href="#" class="text-gray-400 hover:text-white transition">Условия использования</a>

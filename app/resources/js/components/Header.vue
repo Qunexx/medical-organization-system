@@ -2,7 +2,7 @@
     <header class="bg-white shadow-sm sticky top-0 z-50">
         <div class="container mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center">
-                <a href="#" class="text-2xl font-['Pacifico'] text-primary">Медицинская информационная система</a>
+                <a href="#" class="text-2xl font-['Pacifico'] text-primary">МедИнформСистем</a>
                 <nav class="hidden md:flex ml-10 space-x-8">
                     <a href="#about" class="text-gray-700 hover:text-primary font-medium">О нас</a>
                     <a href="#services" class="text-gray-700 hover:text-primary font-medium">Услуги</a>
