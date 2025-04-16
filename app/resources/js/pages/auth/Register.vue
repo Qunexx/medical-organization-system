@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import InputError from '@/components/InputError.vue';
-import TextLink from '@/components/TextLink.vue';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import AuthBase from '@/layouts/AuthLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
-import { LoaderCircle } from 'lucide-vue-next';
+import { Head, useForm, Link } from '@inertiajs/vue3';
+import { ref } from 'vue';
+
+defineProps<{
+    canResetPassword: boolean;
+}>();
 
 const form = useForm({
     name: '',
@@ -15,69 +13,117 @@ const form = useForm({
     password_confirmation: '',
 });
 
+const processing = ref(false);
+
 const submit = () => {
+    processing.value = true;
     form.post(route('register'), {
-        onFinish: () => form.reset('password', 'password_confirmation'),
+        onFinish: () => {
+            form.reset('password', 'password_confirmation');
+            processing.value = false;
+        },
+        onError: () => {
+            processing.value = false;
+        },
     });
 };
 </script>
 
 <template>
-    <AuthBase title="Create an account" description="Enter your details below to create your account">
-        <Head title="Register" />
+    <div class="grid h-screen place-items-center bg-gray-100">
+        <div class="w-full max-w-md p-6 space-y-8 bg-white rounded-lg shadow-md">
+            <Head title="Register" />
 
-        <form @submit.prevent="submit" class="flex flex-col gap-6">
-            <div class="grid gap-6">
-                <div class="grid gap-2">
-                    <Label for="name">Name</Label>
-                    <Input id="name" type="text" required autofocus :tabindex="1" autocomplete="name" v-model="form.name" placeholder="Full name" />
-                    <InputError :message="form.errors.name" />
-                </div>
-
-                <div class="grid gap-2">
-                    <Label for="email">Email address</Label>
-                    <Input id="email" type="email" required :tabindex="2" autocomplete="email" v-model="form.email" placeholder="email@example.com" />
-                    <InputError :message="form.errors.email" />
-                </div>
-
-                <div class="grid gap-2">
-                    <Label for="password">Password</Label>
-                    <Input
-                        id="password"
-                        type="password"
-                        required
-                        :tabindex="3"
-                        autocomplete="new-password"
-                        v-model="form.password"
-                        placeholder="Password"
-                    />
-                    <InputError :message="form.errors.password" />
-                </div>
-
-                <div class="grid gap-2">
-                    <Label for="password_confirmation">Confirm password</Label>
-                    <Input
-                        id="password_confirmation"
-                        type="password"
-                        required
-                        :tabindex="4"
-                        autocomplete="new-password"
-                        v-model="form.password_confirmation"
-                        placeholder="Confirm password"
-                    />
-                    <InputError :message="form.errors.password_confirmation" />
-                </div>
-
-                <Button type="submit" class="mt-2 w-full" tabindex="5" :disabled="form.processing">
-                    <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
-                    Create account
-                </Button>
+            <div class="text-center">
+                <h2 class="mt-6 text-3xl font-bold tracking-tight text-gray-900">Создайте новый аккаунт</h2>
+                <p class="mt-2 text-sm text-gray-600">Введите свои данные для регистрации</p>
             </div>
 
-            <div class="text-center text-sm text-muted-foreground">
-                Already have an account?
-                <TextLink :href="route('login')" class="underline underline-offset-4" :tabindex="6">Log in</TextLink>
-            </div>
-        </form>
-    </AuthBase>
+            <form @submit.prevent="submit" class="flex flex-col gap-6">
+                <div class="grid gap-6">
+                    <div class="grid gap-2">
+                        <label for="name" class="text-gray-700 text-sm font-bold block mb-2">Имя</label>
+                        <input
+                            id="name"
+                            type="text"
+                            required
+                            autofocus
+                            tabindex="1"
+                            autocomplete="name"
+                            v-model="form.name"
+                            placeholder="Полное имя"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        />
+                        <p v-if="form.errors.name" class="text-red-500 text-xs italic">{{ form.errors.name }}</p>
+                    </div>
+
+                    <div class="grid gap-2">
+                        <label for="email" class="text-gray-700 text-sm font-bold block mb-2">Email</label>
+                        <input
+                            id="email"
+                            type="email"
+                            required
+                            tabindex="2"
+                            autocomplete="email"
+                            v-model="form.email"
+                            placeholder="email@example.com"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        />
+                        <p v-if="form.errors.email" class="text-red-500 text-xs italic">{{ form.errors.email }}</p>
+                    </div>
+
+                    <div class="grid gap-2">
+                        <label for="password" class="text-gray-700 text-sm font-bold block mb-2">Пароль</label>
+                        <input
+                            id="password"
+                            type="password"
+                            required
+                            tabindex="3"
+                            autocomplete="new-password"
+                            v-model="form.password"
+                            placeholder="Пароль"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        />
+                        <p v-if="form.errors.password" class="text-red-500 text-xs italic">{{ form.errors.password }}</p>
+                    </div>
+
+                    <div class="grid gap-2">
+                        <label for="password_confirmation" class="text-gray-700 text-sm font-bold block mb-2">Подтвердите пароль</label>
+                        <input
+                            id="password_confirmation"
+                            type="password"
+                            required
+                            tabindex="4"
+                            autocomplete="new-password"
+                            v-model="form.password_confirmation"
+                            placeholder="Подтвердите пароль"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        />
+                        <p v-if="form.errors.password_confirmation" class="text-red-500 text-xs italic">{{ form.errors.password_confirmation }}</p>
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        tabindex="5"
+                        :disabled="processing"
+                    >
+                        <span v-if="processing" class="inline-flex items-center">
+                            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V1a1 1 0 110 2h-3a1 1 0 110 2h3a1 1 0 110 2H8a8 8 0 01-8 8z"></path>
+                            </svg>
+                            Регистрация...
+                        </span>
+                        <span v-else>Зарегистрироваться</span>
+                    </button>
+                </div>
+
+                <div class="text-center text-sm text-gray-500">
+                    Уже есть аккаунт?
+                    <Link :href="route('login')" :tabindex="6" class="text-blue-500 hover:underline">Войти</Link>
+                </div>
+            </form>
+        </div>
+    </div>
 </template>

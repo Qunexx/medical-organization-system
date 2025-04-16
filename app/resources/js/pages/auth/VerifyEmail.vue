@@ -1,36 +1,62 @@
 <script setup lang="ts">
-import TextLink from '@/components/TextLink.vue';
-import { Button } from '@/components/ui/button';
-import AuthLayout from '@/layouts/AuthLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
-import { LoaderCircle } from 'lucide-vue-next';
+import { Head, useForm, Link } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
 defineProps<{
     status?: string;
 }>();
 
 const form = useForm({});
+const processing = ref(false);
 
 const submit = () => {
-    form.post(route('verification.send'));
+    processing.value = true;
+    form.post(route('verification.send'), {
+        onFinish: () => processing.value = false,
+        onError: () => processing.value = false,
+    });
 };
 </script>
 
 <template>
-    <AuthLayout title="Verify email" description="Please verify your email address by clicking on the link we just emailed to you.">
-        <Head title="Email verification" />
+    <div class="grid h-screen place-items-center bg-gray-100">
+        <div class="w-full max-w-md p-6 space-y-8 bg-white rounded-lg shadow-md">
+            <Head title="Email verification" />
 
-        <div v-if="status === 'verification-link-sent'" class="mb-4 text-center text-sm font-medium text-green-600">
-            A new verification link has been sent to the email address you provided during registration.
+            <div class="text-center">
+                <h2 class="mt-6 text-3xl font-bold tracking-tight text-gray-900">Подтверждение email</h2>
+                <p class="mt-2 text-sm text-gray-600">Пожалуйста, подтвердите ваш email адрес, перейдя по ссылке в письме</p>
+            </div>
+
+            <div v-if="status === 'verification-link-sent'" class="mb-4 p-3 text-center text-sm text-green-600 bg-green-50 rounded-lg">
+                Новая ссылка для подтверждения была отправлена на ваш email
+            </div>
+
+            <form @submit.prevent="submit" class="flex flex-col gap-6 text-center">
+                <button
+                    type="submit"
+                    class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    :disabled="processing"
+                >
+                    <span v-if="processing" class="inline-flex items-center">
+                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V1a1 1 0 110 2h-3a1 1 0 110 2h3a1 1 0 110 2H8a8 8 0 01-8 8z"></path>
+                        </svg>
+                        Отправка...
+                    </span>
+                    <span v-else>Отправить письмо повторно</span>
+                </button>
+
+                <Link
+                    :href="route('logout')"
+                    method="post"
+                    as="button"
+                    class="text-sm text-blue-500 hover:underline"
+                >
+                    Выйти из аккаунта
+                </Link>
+            </form>
         </div>
-
-        <form @submit.prevent="submit" class="space-y-6 text-center">
-            <Button :disabled="form.processing" variant="secondary">
-                <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
-                Resend verification email
-            </Button>
-
-            <TextLink :href="route('logout')" method="post" as="button" class="mx-auto block text-sm"> Log out </TextLink>
-        </form>
-    </AuthLayout>
+    </div>
 </template>
