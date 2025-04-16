@@ -38,5 +38,7 @@ RUN sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/' /etc/php/8.3/fpm/php.ini 
 
 RUN chmod -R 755 /var/www/html
 RUN chown -R www-data:www-data /var/www/html
+RUN chmod 755 /var/run/php/php8.3-fpm.sock
+
 
 CMD bash -c "service php8.3-fpm start && nginx -g 'daemon off;'"

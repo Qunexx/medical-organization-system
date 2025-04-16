@@ -4,7 +4,6 @@ import path from 'path';
 import tailwindcss from "@tailwindcss/vite";
 import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
-import basicSsl from '@vitejs/plugin-basic-ssl'
 
 export default defineConfig({
     plugins: [
