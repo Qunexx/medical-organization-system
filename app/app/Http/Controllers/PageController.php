@@ -11,10 +11,7 @@ class PageController extends Controller
 {
     public function index(Request $request): Response
     {
-        return Inertia::render('Main', [
-            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
-            'status' => $request->session()->get('status'),
-        ]);
+        return Inertia::render('MainPage');
     }
 
 }
