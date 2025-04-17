@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\RoleEnum;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Orchid\Filters\Types\Like;
 use Orchid\Filters\Types\Where;
 use Orchid\Filters\Types\WhereDateStartEnd;
@@ -66,4 +68,32 @@ class User extends Authenticatable
         'updated_at',
         'created_at',
     ];
+
+
+    public function isAdmin(): bool
+    {
+        return $this->role === RoleEnum::ADMIN;
+    }
+
+    public function isDoctor(): bool
+    {
+        return $this->role === RoleEnum::DOCTOR;
+    }
+
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'role_users');
+    }
+
+    public function getRoleAttribute(): ?RoleEnum
+    {
+        $role = $this->roles->first();
+
+        return $role ? RoleEnum::from($role->id) : null;
+    }
+
+    public function hasRole(RoleEnum $role): bool
+    {
+        return $this->roles()->where('id', $role->value)->exists();
+    }
 }

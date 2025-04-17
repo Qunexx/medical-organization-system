@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head, useForm, Link } from '@inertiajs/vue3';
+import {Head, useForm, Link, router} from '@inertiajs/vue3';
 import { ref } from 'vue';
 
 defineProps<{
@@ -13,28 +13,44 @@ const form = useForm({
     remember: false,
 });
 
-const processing = ref(false); // Replace form.processing with a local ref
+const processing = ref(false);
 
 const submit = () => {
-    processing.value = true; // Set processing to true before submission
+    processing.value = true;
     form.post(route('login'), {
         onFinish: () => {
             form.reset('password');
-            processing.value = false; // Reset processing after finish
+            processing.value = false;
         },
         onError: () => {
-            processing.value = false; // Reset processing on error
+            processing.value = false;
         },
     });
+};
+
+const handleGoToHome = () => {
+    router.visit(route('home'));
 };
 </script>
 
 <template>
+
     <div class="grid h-screen place-items-center bg-gray-100">
         <div class="w-full max-w-md p-6 space-y-8 bg-white rounded-lg shadow-md">
             <Head title="Log in" />
 
             <div class="text-center">
+                <div class="flex justify-start">
+                    <button
+                        @click="handleGoToHome"
+                        class="flex items-center text-gray-600 hover:text-gray-800 transition-colors"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
+                        </svg>
+                        <span class="text-sm font-medium">На сайт</span>
+                    </button>
+                </div>
                 <h2 class="mt-6 text-3xl font-bold tracking-tight text-gray-900">Авторизуйтесь в свой аккаунт</h2>
                 <p class="mt-2 text-sm text-gray-600">Введите свой email и пароль для входа</p>
             </div>

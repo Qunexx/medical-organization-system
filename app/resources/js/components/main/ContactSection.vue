@@ -90,7 +90,7 @@
                 </div>
             </div>
             <div class="mt-10 bg-white rounded-lg shadow-sm overflow-hidden h-96">
-                <div class="h-full w-full bg-gray-200 flex items-center justify-center text-gray-500" style="background-image: url('#'); background-position: center; background-size: cover;">
+                <div class="h-full w-full bg-gray-200 flex items-center justify-center text-gray-500" style="background-image: url('storage/map.png'); background-position: center; background-size: cover;">
                 </div>
             </div>
             <Teleport to="body">

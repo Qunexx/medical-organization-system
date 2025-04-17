@@ -89,8 +89,14 @@ const handleGoToHome = () => {
 };
 const submit = () => {
     form.post(route('login'),{
-        onSuccess: () => {
-            window.location.reload();
+        onSuccess: (response) => {
+            router.visit(response.redirect);
+        },
+        onError: (errors) => {
+            form.clearErrors().setError(errors);
+        },
+        onFinish: () => {
+            form.reset('password');
         }
     });
 };

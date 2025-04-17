@@ -2,6 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Enums\RoleEnum;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -32,13 +35,15 @@ class UserFactory extends Factory
         ];
     }
 
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
-    public function unverified(): static
+    public function admin()
     {
-        return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
-        ]);
+        return $this->state([
+            'email' => 'admin@admin.ru',
+            'name' => 'Администратор',
+            'password' => bcrypt(123456),
+        ])->afterCreating(function (User $user) {
+            $role = Role::where('slug', RoleEnum::ADMIN->getLabel())->first();
+            $user->addRole($role);
+        });
     }
 }
