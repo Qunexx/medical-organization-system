@@ -45,15 +45,15 @@
                     <ul class="space-y-2">
                         <li class="flex items-start">
                             <i class="ri-map-pin-line mr-2 mt-1 shrink-0"></i>
-                            <span>г. Москва, ул. Медицинская, д. 123</span>
+                            <span>г.Йошкар-Ола</span>
                         </li>
                         <li class="flex items-start">
                             <i class="ri-phone-line mr-2 mt-1 shrink-0"></i>
-                            <span>+7 (495) 123-45-67</span>
+                            <span>+7 (123) 456-78-90</span>
                         </li>
                         <li class="flex items-start">
                             <i class="ri-mail-line mr-2 mt-1 shrink-0"></i>
-                            <span>info@medcenter.ru</span>
+                            <span>info@iformsystem.qunexx.ru</span>
                         </li>
                         <li class="flex items-start">
                             <i class="ri-time-line mr-2 mt-1 shrink-0"></i>
@@ -74,12 +74,12 @@
 </template>
 
 <script setup lang="ts">
-// Логика для футера не требуется
+
 </script>
 
 <style scoped>
 .font-\[\'Pacifico\'\] {
     font-family: 'Pacifico', cursive;
 }
-/* Специфичные стили для Footer, если нужны */
+
 </style>

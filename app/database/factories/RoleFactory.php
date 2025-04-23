@@ -42,10 +42,6 @@ class RoleFactory extends Factory
             'slug' => 'doctor',
             'name' => 'Врач',
             'permissions' => [
-                "platform.index" => "1",
-                "platform.systems.roles" => "1",
-                "platform.systems.users" => "1",
-                "platform.systems.attachment" => "1"
             ],
             'created_at' => now(),
             'updated_at' => now(),
@@ -62,6 +58,18 @@ class RoleFactory extends Factory
                 "platform.systems.roles" => "1",
                 "platform.systems.users" => "1",
                 "platform.systems.attachment" => "1"
+            ],
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    }
+
+    public function user()
+    {
+        return $this->state([
+            'slug' => 'user',
+            'name' => 'Пользователь',
+            'permissions' => [
             ],
             'created_at' => now(),
             'updated_at' => now(),

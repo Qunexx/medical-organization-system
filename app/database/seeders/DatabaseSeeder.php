@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
         RoleFactory::new()->admin()->create();
         RoleFactory::new()->doctor()->create();
         RoleFactory::new()->support()->create();
+        RoleFactory::new()->user()->create();
         UserFactory::new()->admin()->create();
     }
 }

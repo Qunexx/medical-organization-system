@@ -6,3 +6,5 @@ use Inertia\Inertia;
 Route::get('/', [\App\Http\Controllers\PageController::class, 'index'])->name('home');
 
 require 'auth.php';
+
+require 'user.php';

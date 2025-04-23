@@ -80,6 +80,11 @@ class User extends Authenticatable
         return $this->role === RoleEnum::DOCTOR;
     }
 
+    public function isUser(): bool
+    {
+        return $this->role === RoleEnum::USER;
+    }
+
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'role_users');
@@ -95,5 +100,21 @@ class User extends Authenticatable
     public function hasRole(RoleEnum $role): bool
     {
         return $this->roles()->where('id', $role->value)->exists();
+    }
+
+    public function assignRole($role)
+    {
+        if (!in_array($role, RoleEnum::values())) {
+            return false;
+        }
+
+        $role = Role::query()
+            ->where(['role' => $role])
+            ->get();
+
+        $this->role()->associate($role);
+        $this->save();
+
+        return $this;
     }
 }
