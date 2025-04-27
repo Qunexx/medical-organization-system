@@ -40,7 +40,7 @@ enum RoleEnum: int
             'doctor' => self::DOCTOR,
             'support' => self::SUPPORT,
             'user' => self::USER,
-            default => null,
+            default => self::USER,
         };
     }
     /**
@@ -64,6 +64,6 @@ enum RoleEnum: int
      */
     public function isUserBasic(): bool
     {
-        return $this === self::DOCTOR;
+        return $this === self::USER;
     }
 }

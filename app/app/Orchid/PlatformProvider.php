@@ -34,43 +34,40 @@ class PlatformProvider extends OrchidServiceProvider
     public function menu(): array
     {
         return [
-            Menu::make('Get Started')
-                ->icon('bs.book')
-                ->title('Navigation')
-                ->route(config('platform.index')),
 
-            Menu::make('Sample Screen')
-                ->icon('bs.collection')
-                ->route('platform.example')
-                ->badge(fn () => 6),
+            Menu::make('Активные записи')
+                ->icon('bs.bar-chart')
+                ->route('platform.example.charts')
+                ->title(__('Записи')),
 
-            Menu::make('Form Elements')
-                ->icon('bs.card-list')
-                ->route('platform.example.fields')
-                ->active('*/examples/form/*'),
-
-            Menu::make('Layouts Overview')
-                ->icon('bs.window-sidebar')
-                ->route('platform.example.layouts'),
-
-            Menu::make('Grid System')
-                ->icon('bs.columns-gap')
-                ->route('platform.example.grid'),
-
-            Menu::make('Charts')
+            Menu::make('Завершённые записи')
                 ->icon('bs.bar-chart')
                 ->route('platform.example.charts'),
 
-            Menu::make('Cards')
-                ->icon('bs.card-text')
-                ->route('platform.example.cards')
-                ->divider(),
+            Menu::make('Отменённые записи')
+                ->icon('bs.bar-chart')
+                ->route('platform.example.charts'),
+
+
+            Menu::make('Через телеграм')
+                ->icon('bs.bar-chart')
+                ->route('platform.example.charts')
+                ->title(__('Уведомления')),
+
+            Menu::make('Через почту')
+                ->icon('bs.bar-chart')
+                ->route('platform.example.charts'),
+
+            Menu::make('Заявки')
+                ->icon('bs.bar-chart')
+                ->route('platform.example.charts')
+                ->title(__('Жалобы и предложения')),
 
             Menu::make(__('Users'))
                 ->icon('bs.people')
                 ->route('platform.systems.users')
                 ->permission('platform.systems.users')
-                ->title(__('Access Controls')),
+                ->title(__('Управление доступом')),
 
             Menu::make(__('Roles'))
                 ->icon('bs.shield')
@@ -78,17 +75,10 @@ class PlatformProvider extends OrchidServiceProvider
                 ->permission('platform.systems.roles')
                 ->divider(),
 
-            Menu::make('Documentation')
-                ->title('Docs')
-                ->icon('bs.box-arrow-up-right')
-                ->url('https://orchid.software/en/docs')
-                ->target('_blank'),
-
-            Menu::make('Changelog')
-                ->icon('bs.box-arrow-up-right')
-                ->url('https://github.com/orchidsoftware/platform/blob/master/CHANGELOG.md')
-                ->target('_blank')
-                ->badge(fn () => Dashboard::version(), Color::DARK),
+            Menu::make('Графики')
+                ->icon('bs.bar-chart')
+                ->route('platform.example.charts')
+                ->title(__('Статистика')),
         ];
     }
 

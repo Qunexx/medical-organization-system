@@ -40,6 +40,10 @@ class AuthenticatedSessionController extends Controller
             return Inertia::location(route('platform.main'));
         }
 
+        if ($user->isUser()) {
+            return Inertia::location(route('user.profile.show'));
+        }
+
         return Inertia::location(route('home'));
     }
     /**

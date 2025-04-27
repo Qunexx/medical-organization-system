@@ -10,6 +10,6 @@ class UserController extends Controller
 {
     public function profile(Request $request): Response
     {
-        return Inertia::render('profile');
+        return Inertia::render('Profile');
     }
 }

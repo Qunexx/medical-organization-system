@@ -17,7 +17,14 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
+        'middle_name',
+        'address_id',
+        'phone',
+        'birthday',
+        'telegram_id',
+        'avatar_id',
         'email',
         'password',
     ];
@@ -100,21 +107,5 @@ class User extends Authenticatable
     public function hasRole(RoleEnum $role): bool
     {
         return $this->roles()->where('id', $role->value)->exists();
-    }
-
-    public function assignRole($role)
-    {
-        if (!in_array($role, RoleEnum::values())) {
-            return false;
-        }
-
-        $role = Role::query()
-            ->where(['role' => $role])
-            ->get();
-
-        $this->role()->associate($role);
-        $this->save();
-
-        return $this;
     }
 }

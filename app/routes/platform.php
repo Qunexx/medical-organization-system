@@ -48,7 +48,7 @@ Route::middleware(\App\Http\Middleware\RoleMiddleware::class.':admin')->group(fu
         ->name('platform.systems.users.edit')
         ->breadcrumbs(fn(Trail $trail, $user) => $trail
             ->parent('platform.systems.users')
-            ->push($user->name, route('platform.systems.users.edit', $user)));
+            ->push($user->first_name, route('platform.systems.users.edit', $user)));
 
 // Platform > System > Users > Create
     Route::screen('users/create', UserEditScreen::class)

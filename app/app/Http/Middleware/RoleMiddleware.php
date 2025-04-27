@@ -21,10 +21,10 @@ class RoleMiddleware
         }
 
         $allowedRoles = collect($roles)
-            ->map(fn($role) => RoleEnum::fromName($role))
+            ->map(fn($role) => RoleEnum::fromName($role)->getLabel())
             ->filter();
 
-        $userRole = $request->user()->role;
+        $userRole = strtolower($request->user()->role->name);
 
         if (!$allowedRoles->contains($userRole) || $allowedRoles->isEmpty()) {
             abort(403, 'Нет доступа');

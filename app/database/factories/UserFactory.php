@@ -27,7 +27,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
+            'first_name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
@@ -39,7 +39,7 @@ class UserFactory extends Factory
     {
         return $this->state([
             'email' => 'admin@admin.ru',
-            'name' => 'Администратор',
+            'first_name' => 'Администратор',
             'password' => bcrypt(123456),
         ])->afterCreating(function (User $user) {
             $role = Role::where('slug', RoleEnum::ADMIN->getLabel())->first();

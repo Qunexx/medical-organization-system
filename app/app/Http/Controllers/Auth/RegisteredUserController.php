@@ -33,23 +33,23 @@ class RegisteredUserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|max:255',
             'email' => 'required|string|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed','min:6','max:255'],
         ]);
 
         $user = User::create([
-            'name' => $request->name,
+            'first_name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-
-        $user->assignRole(RoleEnum::USER);
+        $role = Role::where('slug', RoleEnum::USER->getLabel())->first();
+        $user->addRole($role);
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return Inertia::location(route('home'));
+        return Inertia::location(route('user.profile'));
     }
 }

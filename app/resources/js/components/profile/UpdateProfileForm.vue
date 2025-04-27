@@ -101,33 +101,26 @@
 import { Link, useForm, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
+const props = usePage().props;
 interface User {
     id: number;
     name: string;
     email: string;
     phone?: string | null;
-    email_verified_at?: string | null; // Для проверки верификации
+    email_verified_at?: string | null;
 }
 
-const props = defineProps<{
-    user: User;
-    mustVerifyEmail?: boolean; // Передается, если включена верификация email
-    status?: string | null;
-}>();
-
-// Используем useForm для удобной работы с формами в Inertia
 const form = useForm({
-    name: props.user.name,
-    email: props.user.email,
-    phone: props.user.phone ?? '', // Инициализируем пустым значением, если null
+    name: props.auth.user.first_name,
+    email: props.auth.user.email,
+    phone: props.auth.user.phone ?? '',
 });
 
-// --- Маска для телефона ---
+
 const applyPhoneMask = (event: Event) => {
     const input = event.target as HTMLInputElement;
     let value = input.value.replace(/\D/g, '');
     let formattedValue = '';
-    // ... (логика маски) ...
     if (value.length > 0) {
         formattedValue = '+';
         if (value.length === 1 && value !== '7') {
@@ -154,10 +147,9 @@ const applyPhoneMask = (event: Event) => {
 
 
 const submit = () => {
-    form.patch(route('dashboard.profile'), { // Убедитесь, что маршрут назван 'dashboard.profile' и метод PATCH определен
-        preserveScroll: true, // Сохраняет позицию скролла после обновления
-        // onSuccess: () => { /* Действия при успехе */ },
-        // onError: () => { /* Действия при ошибке */ },
+    form.patch(route('dashboard.profile'), {
+        preserveScroll: true,
+
     });
 };
 

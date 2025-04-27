@@ -5,7 +5,7 @@ use Inertia\Inertia;
 
 Route::middleware(['auth'])->group(function () {
     Route::prefix('user')->group(function () {
-        Route::get('/', [\App\Http\Controllers\UserController::class, 'profile'])->name('profile');
+        Route::get('/profile', [\App\Http\Controllers\UserController::class, 'profile'])->name('user.profile.show');
 
 //
 //        Route::prefix('consultations')->group(function () {
