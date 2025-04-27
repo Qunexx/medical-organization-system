@@ -3,38 +3,59 @@
         <aside class="w-64 bg-white shadow-md hidden md:block flex-shrink-0">
             <div class="p-4 border-b">
                 <Link :href="route('home')" class="text-2xl font-['Pacifico'] text-primary">
-                    МедЦентр
+                    МедИнформСистем
                 </Link>
             </div>
             <nav class="mt-4">
                 <ul class="flex flex-col h-full">
                     <li>
                         <Link
-                            :href="route('home')"
+                            :href="route('patient.index')"
                             class="nav-link"
-                            :class="{ 'nav-link-active': route().current('home') }"
+                            :class="{ 'nav-link-active': route().current('patient.index') }"
                         >
                             <i class="ri-dashboard-line mr-2"></i> Обзор
                         </Link>
                     </li>
                     <li>
                         <Link
-                            :href="route('home')"
+                            :href="route('patient.profile')"
                             class="nav-link"
-                            :class="{ 'nav-link-active': route('home') }"
+                            :class="{ 'nav-link-active': route().current('patient.profile') }"
                         >
                             <i class="ri-user-line mr-2"></i> Профиль
                         </Link>
                     </li>
                     <li>
                         <Link
-                            :href="route('home')"
-                        class="nav-link"
-                        :class="{ 'nav-link-active': route('home') }"
+                            :href="route('patient.myConsultation')"
+                            class="nav-link"
+                            :class="{ 'nav-link-active': route().current('patient.myConsultation') }"
                         >
-                        <i class="ri-calendar-check-line mr-2"></i> Мои записи
+                            <i class="ri-calendar-check-line mr-2"></i> Мои записи
                         </Link>
                     </li>
+
+                    <li>
+                        <Link
+                            :href="route('patient.notification')"
+                            class="nav-link"
+                            :class="{ 'nav-link-active': route().current('patient.notification') }"
+                        >
+                            <i class="ri-calendar-check-line mr-2"></i> Уведомления
+                        </Link>
+                    </li>
+
+                    <li>
+                        <Link
+                            :href="route('patient.changePassword')"
+                            class="nav-link"
+                            :class="{ 'nav-link-active': route().current('patient.changePassword') }"
+                        >
+                            <i class="ri-calendar-check-line mr-2"></i> Смена пароля
+                        </Link>
+                    </li>
+
                     <li>
                         <Link href="#" class="nav-link nav-link-disabled">
                             <i class="ri-file-list-3-line mr-2"></i> Медкарта (скоро)
@@ -54,17 +75,27 @@
 
         <div class="flex-1 flex flex-col">
             <header class="bg-white shadow-sm p-4 flex justify-between items-center">
-                <div></div>
-                <div class="flex items-center">
-                    <span class="mr-4 text-gray-700">Здравствуйте, {{ $page.props.auth.user.first_name }}!</span>
-                    <Link :href="route('logout')" method="post" as="button" class="md:hidden text-gray-600 hover:text-primary">
+                <div class="flex-1"></div>
+                <div class="flex items-center gap-4">
+          <span class="text-gray-700">
+            Здравствуйте, {{ $page.props.auth.user.first_name }}!
+          </span>
+                    <Link
+                        :href="route('logout')"
+                        method="post"
+                        as="button"
+                        class="md:hidden text-gray-600 hover:text-primary"
+                    >
                         <i class="ri-logout-box-r-line ri-lg"></i>
                     </Link>
                 </div>
             </header>
 
-            <main class="flex-1 p-6">
-                <slot />
+            <main class="flex-1 bg-gray-50">
+                <slot name="header" />
+                <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+                    <slot />
+                </div>
             </main>
         </div>
     </div>

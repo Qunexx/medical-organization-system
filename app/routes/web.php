@@ -7,4 +7,4 @@ Route::get('/', [\App\Http\Controllers\PageController::class, 'index'])->name('h
 
 require 'auth.php';
 
-require 'user.php';
+require 'patient.php';

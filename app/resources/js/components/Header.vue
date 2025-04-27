@@ -21,20 +21,20 @@
             <div class="flex items-center space-x-4">
                 <template v-if="user">
                     <div class="hidden md:flex items-center space-x-4">
-                        <Link :href="route('user.profile.show')"
+                        <Link :href="route('patient.myConsultation')"
                               class="text-gray-700 hover:text-primary font-medium transition-colors">
                             Мои записи
                         </Link>
 
                         <template v-if="user.role === 'USER'">
-                            <Link :href="route('user.profile.show')"
+                            <Link :href="route('patient.profile')"
                                   class="text-gray-700 hover:text-primary font-medium transition-colors">
                                 Личный кабинет
                             </Link>
                         </template>
 
                         <template v-if="user.role === 'DOCTOR'">
-                            <Link :href="route('user.profile.show')"
+                            <Link :href="route('patient.profile')"
                                   class="text-gray-700 hover:text-primary font-medium transition-colors">
                                 Расписание
                             </Link>

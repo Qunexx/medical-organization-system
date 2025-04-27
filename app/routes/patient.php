@@ -4,16 +4,15 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::middleware(['auth'])->group(function () {
-    Route::prefix('user')->group(function () {
-        Route::get('/profile', [\App\Http\Controllers\UserController::class, 'profile'])->name('user.profile.show');
+    Route::prefix('patient')->group(function () {
+        Route::get('/', [\App\Http\Controllers\PatientController::class, 'index'])->name('patient.index');
+        Route::get('/profile', [\App\Http\Controllers\PatientController::class, 'profile'])->name('patient.profile');
+        Route::get('/notification', [\App\Http\Controllers\PatientController::class, 'notification'])->name('patient.notification');
+        Route::get('/change-password', [\App\Http\Controllers\PatientController::class, 'changePassword'])->name('patient.changePassword');
 
-//
-//        Route::prefix('consultations')->group(function () {
-//            Route::get('/', [\App\Http\Controllers\ConsultationController::class, 'index'])->name('consultations.index');
-//            Route::post('/', [\App\Http\Controllers\ConsultationController::class, 'store'])->name('consultations.store');
-//            Route::get('/{consultation}', [\App\Http\Controllers\ConsultationController::class, 'show'])->name('consultations.show');
-//            Route::delete('/{consultation}', [\App\Http\Controllers\ConsultationController::class, 'cancel'])->name('consultations.cancel');
-//        });
+        Route::prefix('consultation')->group(function () {
+            Route::get('/', [\App\Http\Controllers\ConsultationController::class, 'myConsultations'])->name('patient.myConsultation');
+        });
 //
 //
 //        Route::prefix('chat')->group(function () {
