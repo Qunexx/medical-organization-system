@@ -26,6 +26,14 @@
             >
                 Сохранить настройки
             </button>
+            <transition name="fade">
+                <div v-if="showSuccessMessage" class="text-green-600 text-sm font-medium flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    Данные успешно обновлены!
+                </div>
+            </transition>
         </div>
     </div>
 </template>
@@ -33,10 +41,12 @@
 <script setup lang="ts">
 import { useForm } from '@inertiajs/vue3';
 import ToggleSwitch from '../../components/ToggleSwitch.vue';
+import {ref} from "vue";
 
 const props = defineProps({
     settings: Object
 });
+const showSuccessMessage = ref(false);
 
 const form = useForm({
     access_email_notify: props.settings.access_email_notify,
@@ -44,8 +54,14 @@ const form = useForm({
 });
 
 const saveSettings = () => {
-    form.patch(route('notifications.settings.update'), {
-        preserveScroll: true
+    form.post(route('patient.notification.update'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            showSuccessMessage.value = true;
+            setTimeout(() => {
+                showSuccessMessage.value = false;
+            }, 3000);
+        }
     });
 };
 </script>

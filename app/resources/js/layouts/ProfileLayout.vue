@@ -148,10 +148,19 @@ const page = usePage();
     background: none;
     border: none;
     cursor: pointer;
+    color: #4b5563;
 }
+
 .nav-link[as="button"]:hover {
     background-color: #f3f4f6;
     color: #3b82f6;
     border-left-color: #d1d5db;
+}
+
+.nav-link[href="/logout"] {
+    color: #4b5563;
+}
+.nav-link[href="/logout"]:hover {
+    color: #3b82f6;
 }
 </style>

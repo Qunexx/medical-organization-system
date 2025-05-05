@@ -13,17 +13,17 @@
             </div>
 
             <img
-                :src="avatarUrl"
+                :src="currentAvatarUrl"
                 class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-xl"
                 :class="{ 'ring-4 ring-primary': isHovered }"
             />
 
             <div
-                v-if="uploadProgress > 0"
+                v-if="form.progress"
                 class="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center"
             >
                 <span class="text-white font-bold text-lg">
-                    {{ uploadProgress }}%
+                    {{ Math.round(form.progress.percentage) }}%
                 </span>
             </div>
         </div>
@@ -38,13 +38,16 @@
 
         <div class="flex flex-col items-center gap-4">
             <button
+                type="button"
                 @click="showFilePicker"
-                class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+                class="btn-primary"
+                :disabled="form.processing"
             >
                 <i class="ri-upload-cloud-2-line"></i>
-                <span>Изменить фото</span>
+                <span>
+                    {{ form.processing ? 'Загрузка...' : 'Изменить фото' }}
+                </span>
             </button>
-
 
             <p class="text-sm text-gray-500 text-center">
                 Поддерживаемые форматы: JPG, PNG, GIF<br>
@@ -53,7 +56,7 @@
         </div>
 
         <div
-            v-if="isUploading"
+            v-if="form.processing"
             class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
         >
             <div class="bg-white p-8 rounded-xl text-center">
@@ -64,7 +67,7 @@
                 <div class="w-64 h-2 bg-gray-200 rounded-full mt-4">
                     <div
                         class="h-full bg-primary rounded-full transition-all duration-300"
-                        :style="{ width: `${uploadProgress}%` }"
+                        :style="{ width: `${Math.round(form.progress?.percentage || 0)}%` }"
                     ></div>
                 </div>
             </div>
@@ -76,17 +79,20 @@
 import { ref, computed } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 
-const props = defineProps({
-    user: Object
-});
+const props = defineProps<{
+    avatar_url: string;
+}>();
 
 const fileInput = ref<HTMLInputElement | null>(null);
-const uploadProgress = ref(0);
 const isHovered = ref(false);
-const isUploading = ref(false);
+const avatarUrl = ref(props.avatar_url);
 
-const avatarUrl = computed(() =>
-    props.user?.avatar_url || '/images/default-avatar.jpg'
+const form = useForm({
+    avatar: null as File | null,
+});
+
+const currentAvatarUrl = computed(() =>
+    avatarUrl.value || '/images/default-avatar.jpg'
 );
 
 const showFilePicker = () => {
@@ -98,37 +104,61 @@ const handleFileUpload = async (event: Event) => {
     const file = input.files?.[0];
 
     if (!file) return;
+
     if (file.size > 5 * 1024 * 1024) {
         alert('Файл слишком большой! Максимальный размер 5MB');
+        input.value = '';
         return;
     }
 
-    isUploading.value = true;
-    const form = useForm({
-        avatar: file
-    });
-
     try {
-        await form.post(route('avatar.update'), {
-            onUploadProgress: (progressEvent) => {
-                if (progressEvent.total) {
-                    uploadProgress.value = Math.round(
-                        (progressEvent.loaded * 100) / progressEvent.total
-                    );
-                }
+        form.avatar = file;
+
+        await form.post(route('patient.avatar.update'), {
+            preserveScroll: true,
+            preserveState: true,
+            forceFormData: true,
+            onSuccess: () => {
+                avatarUrl.value = form.data.avatar_url || props.avatar_url;
             }
         });
-    } catch (error) {
-        alert('Ошибка загрузки! Попробуйте другой файл');
     } finally {
-        isUploading.value = false;
-        uploadProgress.value = 0;
-        if (input) input.value = '';
+        form.reset();
+        input.value = '';
     }
 };
 </script>
 
 <style scoped>
+.btn-primary {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    background-color: rgb(37 99 235);
+    color: white;
+    border-radius: 0.375rem;
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+}
+
+.btn-primary:hover {
+    background-color: rgb(29 78 216);
+}
+
+.btn-primary:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    ring-width: 2px;
+    ring-color: rgb(59 130 246);
+}
+
+.btn-primary:disabled {
+    opacity: 0.5;
+}
+
+
 .animate-spin {
     animation: spin 1s linear infinite;
 }

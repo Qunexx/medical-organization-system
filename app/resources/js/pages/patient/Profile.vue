@@ -9,7 +9,7 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                 <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                    <AvatarUploader :user="user" />
+                    <AvatarUploader :avatar_url="avatar_url" />
                 </div>
 
                 <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
@@ -40,6 +40,7 @@ import {Head} from "@inertiajs/vue3";
 
 defineProps({
     user: Object,
+    avatar_url: String,
     status: String,
     settings: Object
 });
