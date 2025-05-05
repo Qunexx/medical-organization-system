@@ -50,6 +50,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return Inertia::location(route('user.profile.show'));
+        return Inertia::location(route('patient.profile'));
     }
 }

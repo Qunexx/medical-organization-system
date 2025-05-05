@@ -11,7 +11,9 @@ use Orchid\Platform\Models\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    /**
+
+    const AVATAR_PATH = 'avatars';
+     /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -23,8 +25,7 @@ class User extends Authenticatable
         'address_id',
         'phone',
         'birthday',
-        'telegram_id',
-        'avatar_id',
+        'telegram_account',
         'email',
         'password',
     ];
@@ -107,5 +108,10 @@ class User extends Authenticatable
     public function hasRole(RoleEnum $role): bool
     {
         return $this->roles()->where('id', $role->value)->exists();
+    }
+
+    public function avatar()
+    {
+        return $this->hasOne(Avatar::class);
     }
 }

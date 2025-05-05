@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PatientController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -7,8 +8,12 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('patient')->group(function () {
         Route::get('/', [\App\Http\Controllers\PatientController::class, 'index'])->name('patient.index');
         Route::get('/profile', [\App\Http\Controllers\PatientController::class, 'profile'])->name('patient.profile');
-        Route::get('/notification', [\App\Http\Controllers\PatientController::class, 'notification'])->name('patient.notification');
-        Route::get('/change-password', [\App\Http\Controllers\PatientController::class, 'changePassword'])->name('patient.changePassword');
+        Route::post('/profile/main', [\App\Http\Controllers\PatientController::class, 'mainProfileUpdate'])->name('patient.profile.main.update');
+        Route::post('/profile/additional', [\App\Http\Controllers\PatientController::class, 'additionalProfileUpdate'])->name('patient.profile.additional.update');
+        Route::post('/avatar', [\App\Http\Controllers\PatientController::class, 'avatarUpdate'])->name('patient.avatar.update');
+        Route::get('/notification', [PatientController::class, 'notification'])->name('patient.notification');
+        Route::post('/notifications/settings/update', [PatientController::class, 'notificationChange'])->name('patient.notification.update');
+        Route::get('/change-password', [PatientController::class, 'changePassword'])->name('patient.changePassword');
 
         Route::prefix('consultation')->group(function () {
             Route::get('/', [\App\Http\Controllers\ConsultationController::class, 'myConsultations'])->name('patient.myConsultation');
