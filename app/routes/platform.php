@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 use App\Models\Feedback;
 use App\Models\Service;
+use app\Models\Specialization;
 use App\Orchid\Screens\Feedback\FeedbackListScreen;
 use App\Orchid\Screens\Feedback\FeedbackViewScreen;
 use App\Orchid\Screens\PlatformScreen;
 use App\Orchid\Screens\Role\RoleEditScreen;
 use App\Orchid\Screens\Service\ServiceEditScreen;
 use App\Orchid\Screens\Service\ServiceListScreen;
+use App\Orchid\Screens\Specialization\SpecializationEditScreen;
+use App\Orchid\Screens\Specialization\SpecializationListScreen;
 use App\Orchid\Screens\User\Admin\AdminEditScreen;
 use App\Orchid\Screens\User\Admin\AdminListScreen;
 use App\Orchid\Screens\User\Doctor\DoctorEditScreen;
@@ -189,6 +192,31 @@ Route::middleware(\App\Http\Middleware\RoleMiddleware::class.':admin')->group(fu
             return $trail
                 ->parent('platform.service')
                 ->push($service->id, route('platform.service.edit', $service));
+        });
+
+    // Platform > System > Specialization
+    Route::screen('specialization', SpecializationListScreen::class)
+        ->name('platform.specialization')
+        ->breadcrumbs(fn(Trail $trail) => $trail
+            ->parent('platform.index')
+            ->push('Специализации', route('platform.specialization')));
+
+    // Platform > System > Specialization > Create
+    Route::screen('specialization/create', SpecializationEditScreen::class)
+        ->name('platform.specialization.create')
+        ->breadcrumbs(function (Trail $trail) {
+            return $trail
+                ->parent('platform.specialization')
+                ->push('Создать', route('platform.specialization.create'));
+        });
+
+    // Platform > System > Specialization > Edit
+    Route::screen('specialization/{specialization}/edit', SpecializationEditScreen::class)
+        ->name('platform.specialization.edit')
+        ->breadcrumbs(function (Trail $trail, Specialization $specialization) {
+            return $trail
+                ->parent('platform.specialization')
+                ->push($specialization->id, route('platform.specialization.edit', $specialization));
         });
 
 });

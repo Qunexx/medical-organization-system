@@ -30,16 +30,7 @@
                         <li><a href="#contacts" class="text-gray-400 hover:text-white transition">Контакты</a></li>
                     </ul>
                 </div>
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Услуги</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Кардиология</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Неврология</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Гастроэнтерология</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Эндокринология</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Офтальмология</a></li>
-                    </ul>
-                </div>
+
                 <div>
                     <h3 class="text-lg font-semibold mb-4">Контакты</h3>
                     <ul class="space-y-2">

@@ -61,6 +61,10 @@ class PlatformProvider extends OrchidServiceProvider
                 ->title(__('Система'))
                 ->route('platform.service'),
 
+            Menu::make(__('Специализации'))
+                ->icon('bs.shield')
+                ->route('platform.specialization'),
+
             Menu::make(__('Обратная связь'))
                 ->icon('bs.shield')
                 ->title(__('Обратная связь'))
