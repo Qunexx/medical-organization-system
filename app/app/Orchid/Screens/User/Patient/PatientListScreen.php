@@ -66,9 +66,6 @@ class PatientListScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            Link::make(__('Add'))
-                ->icon('bs.plus-circle')
-                ->route('platform.systems.users.create'),
         ];
     }
 
