@@ -45,7 +45,6 @@ class Service extends Model
             'service_id',
             'doctor_id'
         )
-            ->withPivot(['duration', 'price'])
             ->withTimestamps();
     }
 

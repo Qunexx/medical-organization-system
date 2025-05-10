@@ -6,13 +6,13 @@
                     МедИнформСистем
                 </Link>
                 <nav class="hidden md:flex ml-10 space-x-8">
-                    <Link href="#about" class="text-gray-700 hover:text-primary font-medium transition-colors">
+                    <Link  :href="route('home') + '#about'" class="text-gray-700 hover:text-primary font-medium transition-colors">
                         О нас
                     </Link>
-                    <Link href="#services" class="text-gray-700 hover:text-primary font-medium transition-colors">
+                    <Link :href="route('home') + '#services'" class="text-gray-700 hover:text-primary font-medium transition-colors">
                         Услуги
                     </Link>
-                    <Link href="#doctors" class="text-gray-700 hover:text-primary font-medium transition-colors">
+                    <Link :href="route('home') + '#doctors'" class="text-gray-700 hover:text-primary font-medium transition-colors">
                         Врачи
                     </Link>
                 </nav>

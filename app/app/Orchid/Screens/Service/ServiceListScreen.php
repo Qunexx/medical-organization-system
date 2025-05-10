@@ -42,7 +42,7 @@ class ServiceListScreen extends Screen
      */
     public function description(): ?string
     {
-        return 'Здесь находится список услуг, оказываемых в клинике';
+        return 'Здесь находится список услуг, оказываемых в клинике. Они отображаются на главной странице и на странице услуг';
     }
 
     public function permission(): ?iterable

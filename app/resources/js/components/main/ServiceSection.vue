@@ -6,66 +6,28 @@
                 <p class="text-gray-600 max-w-3xl mx-auto">Мы предлагаем широкий спектр медицинских услуг для поддержания вашего здоровья</p>
             </div>
             <div class="grid md:grid-cols-3 gap-6">
-                <div class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Кардиология</h3>
-                    <p class="text-gray-600 mb-4">Диагностика и лечение заболеваний сердечно-сосудистой системы, ЭКГ, УЗИ сердца</p>
-                    <a href="#" class="text-primary font-medium hover:underline flex items-center">
+                <div v-for="service in services" :key="service.id" class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ service.name }}</h3>
+                    <p class="text-gray-600 mb-4">{{ service.description }}</p>
+                    <Link :href="route('services.show', service.id)" class="text-primary font-medium hover:underline flex items-center">
                         Подробнее
                         <i class="ri-arrow-right-line ml-1"></i>
-                    </a>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Неврология</h3>
-                    <p class="text-gray-600 mb-4">Диагностика и лечение заболеваний нервной системы, ЭЭГ, консультации невролога</p>
-                    <a href="#" class="text-primary font-medium hover:underline flex items-center">
-                        Подробнее
-                        <i class="ri-arrow-right-line ml-1"></i>
-                    </a>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Лабораторная диагностика</h3>
-                    <p class="text-gray-600 mb-4">Широкий спектр лабораторных исследований, анализы крови, мочи, гормональные исследования</p>
-                    <a href="#" class="text-primary font-medium hover:underline flex items-center">
-                        Подробнее
-                        <i class="ri-arrow-right-line ml-1"></i>
-                    </a>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Гастроэнтерология</h3>
-                    <p class="text-gray-600 mb-4">Диагностика и лечение заболеваний желудочно-кишечного тракта, гастроскопия, колоноскопия</p>
-                    <a href="#" class="text-primary font-medium hover:underline flex items-center">
-                        Подробнее
-                        <i class="ri-arrow-right-line ml-1"></i>
-                    </a>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Офтальмология</h3>
-                    <p class="text-gray-600 mb-4">Диагностика и лечение заболеваний глаз, проверка зрения, подбор очков и контактных линз</p>
-                    <a href="#" class="text-primary font-medium hover:underline flex items-center">
-                        Подробнее
-                        <i class="ri-arrow-right-line ml-1"></i>
-                    </a>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Эндокринология</h3>
-                    <p class="text-gray-600 mb-4">Диагностика и лечение заболеваний эндокринной системы, консультации эндокринолога</p>
-                    <a href="#" class="text-primary font-medium hover:underline flex items-center">
-                        Подробнее
-                        <i class="ri-arrow-right-line ml-1"></i>
-                    </a>
+                    </Link>
                 </div>
             </div>
             <div class="mt-10 text-center">
-                <a href="#" class="bg-primary text-white px-6 py-3 !rounded-button font-medium hover:bg-blue-600 transition inline-block whitespace-nowrap">Все услуги</a>
+                <Link :href="route('services.all')" class="bg-primary text-white px-6 py-3 !rounded-button font-medium hover:bg-blue-600 transition inline-block whitespace-nowrap">
+                    Все услуги
+                </Link>
             </div>
         </div>
     </section>
 </template>
 
-<script setup lang="ts">
+<script setup>
+import { Link } from '@inertiajs/vue3'
 
+defineProps({
+    services: Array
+})
 </script>
-
-<style scoped>
-
-</style>
