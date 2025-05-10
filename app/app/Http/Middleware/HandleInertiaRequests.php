@@ -46,7 +46,7 @@ class HandleInertiaRequests extends Middleware
                     ? [
                         ...$request->user()->toArray(),
                         'role' => $request->user()->role->name ?? null,
-                        'avatar_url' => Storage::url($request->user()->avatar->url),
+                        'avatar_url' => Storage::url($request->user()->avatar?->url),
                     ]
                     : null ],
             'ziggy' => [

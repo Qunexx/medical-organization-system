@@ -50,7 +50,7 @@
                         <Link
                             :href="route('patient.changePassword')"
                             class="nav-link"
-                            :class="{ 'nav-link-active': route().current('patient.changePassword') }"
+                            :class="{ 'nav-link-active': route().current('patient.changePasswordView') }"
                         >
                             <i class="ri-calendar-check-line mr-2"></i> Смена пароля
                         </Link>

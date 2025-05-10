@@ -18,7 +18,7 @@
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">
-                Новый пароль
+                Новый пароль(введите минимум 8 символов для безопасности)
                 <span class="text-red-500">*</span>
             </label>
             <input
@@ -78,7 +78,7 @@ const form = useForm({
 })
 
 const submit = () => {
-    form.put(route('password.update'), {
+    form.post(route('patient.changePassword'), {
         preserveScroll: true,
         onSuccess: () => form.reset(),
         onError: () => {
@@ -89,3 +89,31 @@ const submit = () => {
     })
 }
 </script>
+
+<style scoped>
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+}
+
+.name-fields {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+</style>

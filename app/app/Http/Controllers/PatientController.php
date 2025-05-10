@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Avatar;
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -34,7 +35,7 @@ class PatientController extends Controller
                 'birthday' => $user->birthday,
                 'telegram_account' => $user->telegram_account,
             ],
-            'avatar_url' => Storage::url($user->avatar->url) ?? '',
+            'avatar_url' => Storage::url($user->avatar?->url) ?? '',
             'settings' => [
                 'access_email_notify' => $user->access_email_notify,
                 'access_telegram_notify' => $user->access_telegram_notify
@@ -124,7 +125,7 @@ class PatientController extends Controller
         return back()->with('success', 'Настройки уведомлений успешно обновлены.');
     }
 
-    public function changePassword(Request $request): Response
+    public function changePasswordView(Request $request): Response
     {
         $user = auth()->user();
 
@@ -133,7 +134,7 @@ class PatientController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'avatar_url' => $user->avatar_url ?? '/images/default-avatar.jpg',
+                'avatar_url' => $user->avatar_url,
             ],
             'settings' => [
                 'access_email_notify' => $user->access_email_notify,
@@ -141,6 +142,40 @@ class PatientController extends Controller
             ],
             'status' => session('status')
         ]);
+    }
+
+    public function changePassword(Request $request)
+    {
+        $user = auth()->user();
+
+        $validated = $request->validate([
+            'current_password' => [
+                'required',
+                function ($attribute, $value, $fail) use ($user) {
+                    if (!Hash::check($value, $user->password)) {
+                        $fail('Текущий пароль введен неверно');
+                    }
+                },
+            ],
+            'password' => [
+                'nullable',
+                'confirmed',
+                Password::min(8),
+            ],
+            'password_confirmation' => 'required_with:password|min:8',
+        ]);
+
+        if ($request->filled('password')) {
+            $user->update([
+                'password' => Hash::make($validated['password'])
+            ]);
+            auth()->logout();
+
+            return redirect()->route('login')
+                ->with('success', 'Пароль успешно изменен. Войдите снова.');
+        }
+
+        return back()->with('success', 'Настройки сохранены');
     }
 
     public function notification(Request $request): Response
@@ -152,7 +187,7 @@ class PatientController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'avatar_url' => $user->avatar_url ?? '/images/default-avatar.jpg',
+                'avatar_url' => $user->avatar_url,
             ],
             'settings' => [
                 'access_email_notify' => $user->access_email_notify,
@@ -171,7 +206,7 @@ class PatientController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'avatar_url' => $user->avatar_url ?? '/images/default-avatar.jpg',
+                'avatar_url' => $user->avatar_url,
             ],
             'settings' => [
                 'access_email_notify' => $user->access_email_notify,

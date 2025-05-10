@@ -34,15 +34,18 @@
                 <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                     <h3 class="text-lg font-medium mb-4">Быстрый доступ</h3>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <Link :href="`${route('home')}#appointment`">
                         <ActionButton
                             icon="ri-add-circle-line"
                             label="Новая запись"
                             variant="success"
                             @click=""
                         />
+                        </Link>
                         <ActionButton
                             icon="ri-file-edit-line"
                             label="Медкарта"
+                            disabled=true
                             variant="success"
                             @click=""
                         />
@@ -52,12 +55,14 @@
                             variant="success"
                             @click=""
                         />
+                        <Link :href="route('patient.profile')">
                         <ActionButton
                             icon="ri-settings-3-line"
                             label="Профиль"
                             variant="success"
                             @click=""
                         />
+                        </Link>
                     </div>
                 </div>
             </div>
@@ -69,10 +74,12 @@
 import ProfileLayout from '../../layouts/ProfileLayout.vue';
 import DashboardCard from '../../components/DashboardCard.vue';
 import ActionButton from '../../components/ActionButton.vue';
-import {Head} from "@inertiajs/vue3";
+import {Head, Link} from "@inertiajs/vue3";
 
 defineProps({
     appointmentsCount: Number,
     unreadNotifications: Number
 });
+
+
 </script>

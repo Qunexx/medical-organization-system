@@ -16,12 +16,10 @@
 </template>
 
 <script setup lang="ts">
-// Компонент HeroSection не требует сложной логики в данном примере
-// Можно добавить props для настройки текста или изображения, если необходимо
+
 </script>
 
 <style scoped>
-/* Стили специфичные для Hero секции */
 .hero-section {
     background-image: url(/storage/heroLayout.jpg);
     background-size: cover;
@@ -29,7 +27,6 @@
 }
 
 .hero-content {
-    /* Градиент для лучшей читаемости текста */
     background: linear-gradient(90deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 50%, rgba(255,255,255,0) 100%);
 }
 </style>
