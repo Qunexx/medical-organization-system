@@ -111,17 +111,17 @@ Route::middleware(\App\Http\Middleware\RoleMiddleware::class.':admin')->group(fu
             ->push('Пациенты', route('platform.patient')));
 
     // Platform > System > Doctors > Edit
-    Route::screen('doctors/{user}/edit', DoctorEditScreen::class)
+    Route::screen('doctors/{doctor}/edit', DoctorEditScreen::class)
         ->name('platform.doctor.edit')
-        ->breadcrumbs(fn(Trail $trail, $user) => $trail
-            ->parent('platform.patient')
-            ->push($user->first_name, route('platform.admin.edit', $user)));
+        ->breadcrumbs(fn(Trail $trail, $doctor) => $trail
+            ->parent('platform.doctor')
+            ->push($doctor->user->first_name, route('platform.doctor.edit', $doctor)));
 
 // Platform > System > Doctors > Create
     Route::screen('doctors/create', DoctorEditScreen::class)
         ->name('platform.doctor.create')
         ->breadcrumbs(fn(Trail $trail) => $trail
-            ->parent('platform.systems.patient')
+            ->parent('platform.doctor')
             ->push(__('Create'), route('platform.patient.create')));
 
 // Platform > System > Doctors

@@ -69,14 +69,6 @@ class RoleEditScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            Button::make(__('Save'))
-                ->icon('bs.check-circle')
-                ->method('save'),
-
-            Button::make(__('Remove'))
-                ->icon('bs.trash3')
-                ->method('remove')
-                ->canSee($this->role->exists),
         ];
     }
 

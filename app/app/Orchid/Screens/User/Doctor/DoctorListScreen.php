@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace app\Orchid\Screens\User\Doctor;
 
 use App\Enums\RoleEnum;
+use App\Models\Doctor;
+use App\Orchid\Layouts\User\Doctor\DoctorListLayout;
 use App\Orchid\Layouts\User\UserEditLayout;
 use App\Orchid\Layouts\User\UserFiltersLayout;
 use App\Orchid\Layouts\User\UserListLayout;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use App\Models\User;
 use Orchid\Screen\Actions\Link;
@@ -68,7 +71,7 @@ class DoctorListScreen extends Screen
         return [
             Link::make(__('Add'))
                 ->icon('bs.plus-circle')
-                ->route('platform.systems.users.create'),
+                ->route('platform.doctor.create'),
         ];
     }
 
@@ -81,7 +84,7 @@ class DoctorListScreen extends Screen
     {
         return [
             UserFiltersLayout::class,
-            UserListLayout::class,
+          DoctorListLayout::class,
 
             Layout::modal('editUserModal', UserEditLayout::class)
                 ->deferred('loadUserOnOpenModal'),
@@ -114,10 +117,16 @@ class DoctorListScreen extends Screen
         Toast::info(__('User was saved.'));
     }
 
-    public function remove(Request $request): void
+    public function remove(Request $request)
     {
-        User::findOrFail($request->get('id'))->delete();
+        $doctor = Doctor::findOrFail($request->input('id'));
+        $user = $doctor->user();
+        $doctor->delete();
+        Storage::delete($user->avatar);
+       // $user->avatar->delete();
+        $user->delete();
+        Toast::info(__('Врач был удалён'));
 
-        Toast::info(__('User was removed'));
+        return redirect()->route('platform.doctor');
     }
 }

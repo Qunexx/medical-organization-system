@@ -4,10 +4,12 @@ namespace Database\Seeders;
 
 use App\Models\Role;
 use App\Models\Service;
-use app\Models\Specialization;
+use App\Models\Specialization;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Database\Factories\RoleFactory;
+use Database\Factories\ServiceFactory;
+use Database\Factories\SpecializationFactory;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -28,7 +30,7 @@ class DatabaseSeeder extends Seeder
         RoleFactory::new()->support()->create();
         RoleFactory::new()->user()->create();
         UserFactory::new()->admin()->create();
-        Specialization::factory()->count(6)->create();
-        Service::factory()->count(10)->create();
+        SpecializationFactory::new()->count(6)->create();
+        ServiceFactory::new()->count(10)->create();
     }
 }

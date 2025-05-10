@@ -22,6 +22,16 @@ enum RoleEnum: int
         };
     }
 
+    public function getRussianLabel(): string
+    {
+        return match ($this) {
+            self::ADMIN => 'Администратор',
+            self::DOCTOR => 'Врач',
+            self::SUPPORT => 'Поддержка',
+            self::USER => 'Пользователь',
+        };
+    }
+
     /**
      * Получить массив всех значений
      */

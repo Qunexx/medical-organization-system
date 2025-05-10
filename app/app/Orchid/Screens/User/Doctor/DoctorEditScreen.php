@@ -2,15 +2,23 @@
 
 declare(strict_types=1);
 
-namespace app\Orchid\Screens\User\Doctor;
+namespace App\Orchid\Screens\User\Doctor;
 
+use App\Enums\RoleEnum;
+use App\Models\Avatar;
+use App\Models\Doctor;
+use App\Models\Role;
+use App\Models\Service;
 use App\Orchid\Layouts\Role\RolePermissionLayout;
+use App\Orchid\Layouts\User\Doctor\DoctorEditLayout;
 use App\Orchid\Layouts\User\UserEditLayout;
 use App\Orchid\Layouts\User\UserPasswordLayout;
 use App\Orchid\Layouts\User\UserRoleLayout;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Orchid\Access\Impersonation;
 use App\Models\User;
@@ -27,19 +35,30 @@ class DoctorEditScreen extends Screen
      * @var User
      */
     public $user;
+    public $doctor;
 
     /**
      * Fetch data to be displayed on the screen.
      *
      * @return array
      */
-    public function query(User $user): iterable
+    public function query(Doctor $doctor): iterable
     {
-        $user->load(['roles']);
+        if ($doctor->exists) {
+            $doctor->load([
+                'specializations',
+                'services',
+                'user.roles',
+                'user.avatar'
+            ]);
+        }
+
+        $user = $doctor->user ?? new User();
 
         return [
-            'user'       => $user,
-            'permission' => $user->getStatusPermission(),
+            'user' => $user,
+            'doctor' => $doctor,
+            'permission' => $user->exists ? $user->getStatusPermission() : null,
         ];
     }
 
@@ -48,7 +67,7 @@ class DoctorEditScreen extends Screen
      */
     public function name(): ?string
     {
-        return $this->user->exists ? 'Edit User' : 'Create User';
+        return $this->user->exists ? 'Редактирование врача' : 'Создание врача';
     }
 
     /**
@@ -56,13 +75,12 @@ class DoctorEditScreen extends Screen
      */
     public function description(): ?string
     {
-        return 'User profile and privileges, including their associated role.';
+        return 'Данные врача';
     }
 
     public function permission(): ?iterable
     {
         return [
-            'platform.systems.users',
         ];
     }
 
@@ -74,12 +92,6 @@ class DoctorEditScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            Button::make(__('Impersonate user'))
-                ->icon('bg.box-arrow-in-right')
-                ->confirm(__('You can revert to your original state by logging out.'))
-                ->method('loginAs')
-                ->canSee($this->user->exists && $this->user->id !== \request()->user()->id),
-
             Button::make(__('Remove'))
                 ->icon('bs.trash3')
                 ->confirm(__('Once the account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.'))
@@ -98,85 +110,72 @@ class DoctorEditScreen extends Screen
     public function layout(): iterable
     {
         return [
-
-            Layout::block(UserEditLayout::class)
-                ->title(__('Profile Information'))
-                ->description(__('Update your account\'s profile information and email address.'))
-                ->commands(
-                    Button::make(__('Save'))
-                        ->type(Color::BASIC)
-                        ->icon('bs.check-circle')
-                        ->canSee($this->user->exists)
-                        ->method('save')
-                ),
-
-            Layout::block(UserPasswordLayout::class)
-                ->title(__('Password'))
-                ->description(__('Ensure your account is using a long, random password to stay secure.'))
-                ->commands(
-                    Button::make(__('Save'))
-                        ->type(Color::BASIC)
-                        ->icon('bs.check-circle')
-                        ->canSee($this->user->exists)
-                        ->method('save')
-                ),
-
-            Layout::block(UserRoleLayout::class)
-                ->title(__('Roles'))
-                ->description(__('A Role defines a set of tasks a user assigned the role is allowed to perform.'))
-                ->commands(
-                    Button::make(__('Save'))
-                        ->type(Color::BASIC)
-                        ->icon('bs.check-circle')
-                        ->canSee($this->user->exists)
-                        ->method('save')
-                ),
-
-            Layout::block(RolePermissionLayout::class)
-                ->title(__('Permissions'))
-                ->description(__('Allow the user to perform some actions that are not provided for by his roles'))
-                ->commands(
-                    Button::make(__('Save'))
-                        ->type(Color::BASIC)
-                        ->icon('bs.check-circle')
-                        ->canSee($this->user->exists)
-                        ->method('save')
-                ),
-
+            DoctorEditLayout::class,
         ];
     }
 
     /**
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function save(User $user, Request $request)
+    public function save(Request $request, Doctor $doctor)
     {
         $request->validate([
+            'user.first_name' => 'required',
+            'user.last_name' => 'required',
             'user.email' => [
                 'required',
-                Rule::unique(User::class, 'email')->ignore($user),
+                'email',
+                Rule::unique(User::class, 'email')->ignore($doctor->user->id ?? null)
             ],
+            'user.phone' => [
+                'required',
+                Rule::unique(User::class, 'phone')->ignore($doctor->user->id ?? null)
+            ],
+            'user.password' => [
+                Rule::requiredIf(!$doctor->exists),
+                'nullable',
+                'min:8',
+            ],
+            'doctor.years_of_experience' => 'numeric|min:0',
+            'doctor.specializations' => 'required|array',
+            'doctor.services' => 'required|array',
         ]);
 
-        $permissions = collect($request->get('permissions'))
-            ->map(fn ($value, $key) => [base64_decode($key) => $value])
-            ->collapse()
-            ->toArray();
+        DB::transaction(function () use ($request, $doctor) {
+            $user = $doctor->user ?? new User();
+            $userData = $request->input('user');
+            unset($userData['password']);
+            $user->fill($request->input('user'));
+            if (!$user->exists || $request->filled('user.password') || empty($user->password)) {
+                $user->password = Hash::make($request->input('user.password'));
+            }
+            $user->save();
+            $doctor->fill($request->input('doctor'));
+            $doctor->user_id = $user->id;
+            $doctor->save();
+            $doctor->specializations()->sync((array)$request->input('doctor.specializations'));
+            $doctor->services()->sync((array)$request->input('doctor.services'));
 
-        $user->when($request->filled('user.password'), function (Builder $builder) use ($request) {
-            $builder->getModel()->password = Hash::make($request->input('user.password'));
+            if ($request->hasFile('user.avatar')) {
+                $user->avatar()->updateOrCreate(
+                    ['user_id' => $user->id],
+                    ['url' => $request->file('user.avatar')->store(User::AVATAR_PATH)]
+                );
+            }
+
+            if (!$user->hasRole(RoleEnum::DOCTOR)) {
+                $role = Role::firstOrCreate([
+                    'slug' => RoleEnum::DOCTOR->getLabel()
+                ], [
+                    'name' => RoleEnum::DOCTOR->getRussianLabel(),
+                    'permissions' => []
+                ]);
+                $user->addRole($role);
+            }
         });
 
-        $user
-            ->fill($request->collect('user')->except(['password', 'permissions', 'roles'])->toArray())
-            ->forceFill(['permissions' => $permissions])
-            ->save();
-
-        $user->replaceRoles($request->input('user.roles'));
-
-        Toast::info(__('User was saved.'));
-
-        return redirect()->route('platform.systems.users');
+        Toast::info($doctor->wasRecentlyCreated ? 'Доктор создан' : 'Данные обновлены');
+        return redirect()->route('platform.doctor');
     }
 
     /**
@@ -184,24 +183,15 @@ class DoctorEditScreen extends Screen
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function remove(User $user)
+    public function remove(Doctor $doctor)
     {
-        $user->delete();
+       $user = $doctor->user();
+       $doctor->delete();
+       Storage::delete($user->avatar);
+       $user->avatar->delete();
+       $user->delete();
+       Toast::info(__('Врач был удалён'));
 
-        Toast::info(__('User was removed'));
-
-        return redirect()->route('platform.systems.users');
-    }
-
-    /**
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function loginAs(User $user)
-    {
-        Impersonation::loginAs($user);
-
-        Toast::info(__('You are now impersonating this user'));
-
-        return redirect()->route(config('platform.index'));
+        return redirect()->route('platform.doctor');
     }
 }
