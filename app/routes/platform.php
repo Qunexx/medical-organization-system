@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Models\Feedback;
 use App\Orchid\Screens\Examples\ExampleActionsScreen;
 use App\Orchid\Screens\Examples\ExampleCardsScreen;
 use App\Orchid\Screens\Examples\ExampleChartsScreen;
@@ -11,9 +12,10 @@ use App\Orchid\Screens\Examples\ExampleGridScreen;
 use App\Orchid\Screens\Examples\ExampleLayoutsScreen;
 use App\Orchid\Screens\Examples\ExampleScreen;
 use App\Orchid\Screens\Examples\ExampleTextEditorsScreen;
+use App\Orchid\Screens\Feedback\FeedbackListScreen;
+use App\Orchid\Screens\Feedback\FeedbackViewScreen;
 use App\Orchid\Screens\PlatformScreen;
 use App\Orchid\Screens\Role\RoleEditScreen;
-use App\Orchid\Screens\Role\RoleListScreen;
 use App\Orchid\Screens\User\UserEditScreen;
 use App\Orchid\Screens\User\UserListScreen;
 use App\Orchid\Screens\User\UserProfileScreen;
@@ -79,13 +81,40 @@ Route::middleware(\App\Http\Middleware\RoleMiddleware::class.':admin')->group(fu
             ->push(__('Create'), route('platform.systems.roles.create')));
 
 // Platform > System > Roles
-    Route::screen('roles', RoleListScreen::class)
+    Route::screen('roles', \App\Orchid\Screens\Role\RoleListScreen::class)
         ->name('platform.systems.roles')
         ->breadcrumbs(fn(Trail $trail) => $trail
             ->parent('platform.index')
             ->push(__('Roles'), route('platform.systems.roles')));
 
-// Example...
+
+    Route::screen('users/create', UserEditScreen::class)
+        ->name('platform.systems.users.create')
+        ->breadcrumbs(fn(Trail $trail) => $trail
+            ->parent('platform.systems.users')
+            ->push(__('Create'), route('platform.systems.users.create')));
+
+
+    // Platform > System > Feedback
+    Route::screen('feedback', FeedbackListScreen::class)
+        ->name('platform.feedback')
+        ->breadcrumbs(fn(Trail $trail) => $trail
+            ->parent('platform.index')
+            ->push('Обратная связь', route('platform.feedback')));
+
+    Route::screen('feedback/{feedback}', FeedbackViewScreen::class)
+        ->name('platform.feedback.view')
+        ->breadcrumbs(function (Trail $trail, Feedback $feedback) {
+            return $trail
+                ->parent('platform.feedback')
+                ->push($feedback->id, route('platform.feedback.view',$feedback));
+        });
+
+
+
+
+
+    // Example...
     Route::screen('example', ExampleScreen::class)
         ->name('platform.example')
         ->breadcrumbs(fn(Trail $trail) => $trail

@@ -3,8 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', [\App\Http\Controllers\PageController::class, 'index'])->name('home');
-
+require 'main.php';
 require 'auth.php';
-
 require 'patient.php';

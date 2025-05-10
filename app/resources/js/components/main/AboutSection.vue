@@ -30,30 +30,18 @@
             </div>
             <div class="mt-16 grid md:grid-cols-4 gap-6">
                 <div class="text-center p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition">
-                    <div class="w-16 h-16 flex items-center justify-center mx-auto mb-4 bg-blue-100 text-primary rounded-full">
-                        <i class="ri-user-heart-line ri-2x"></i>
-                    </div>
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Индивидуальный подход</h3>
                     <p class="text-gray-600">Мы разрабатываем персонализированные планы лечения для каждого пациента</p>
                 </div>
                 <div class="text-center p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition">
-                    <div class="w-16 h-16 flex items-center justify-center mx-auto mb-4 bg-green-100 text-secondary rounded-full">
-                        <i class="ri-stethoscope-line ri-2x"></i>
-                    </div>
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Опытные специалисты</h3>
                     <p class="text-gray-600">Наши врачи имеют многолетний опыт и постоянно повышают квалификацию</p>
                 </div>
                 <div class="text-center p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition">
-                    <div class="w-16 h-16 flex items-center justify-center mx-auto mb-4 bg-blue-100 text-primary rounded-full">
-                        <i class="ri-hospital-line ri-2x"></i>
-                    </div>
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Современное оборудование</h3>
                     <p class="text-gray-600">Мы используем передовые технологии для диагностики и лечения</p>
                 </div>
                 <div class="text-center p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition">
-                    <div class="w-16 h-16 flex items-center justify-center mx-auto mb-4 bg-green-100 text-secondary rounded-full">
-                        <i class="ri-24-hours-line ri-2x"></i>
-                    </div>
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Удобная запись</h3>
                     <p class="text-gray-600">Онлайн-запись на прием и уведомления через веб-сайт и Telegram</p>
                 </div>

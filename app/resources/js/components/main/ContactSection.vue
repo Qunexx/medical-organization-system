@@ -10,36 +10,24 @@
                     <div class="bg-white p-6 rounded-lg shadow-sm mb-6">
                         <h3 class="text-xl font-semibold text-gray-800 mb-4">Наши контакты</h3>
                         <div class="flex items-start mb-4">
-                            <div class="w-10 h-10 flex items-center justify-center bg-blue-100 text-primary rounded-full mr-3 shrink-0">
-                                <i class="ri-map-pin-line"></i>
-                            </div>
                             <div>
                                 <h4 class="font-semibold text-gray-800">Адрес</h4>
                                 <p class="text-gray-600">г.Йошкар-Ола</p>
                             </div>
                         </div>
                         <div class="flex items-start mb-4">
-                            <div class="w-10 h-10 flex items-center justify-center bg-blue-100 text-primary rounded-full mr-3 shrink-0">
-                                <i class="ri-phone-line"></i>
-                            </div>
                             <div>
                                 <h4 class="font-semibold text-gray-800">Телефон</h4>
-                                <p class="text-gray-600">+7 (495) 123-45-67</p>
+                                <p class="text-gray-600">+7 (123) 456-78-90</p>
                             </div>
                         </div>
                         <div class="flex items-start mb-4">
-                            <div class="w-10 h-10 flex items-center justify-center bg-blue-100 text-primary rounded-full mr-3 shrink-0">
-                                <i class="ri-mail-line"></i>
-                            </div>
                             <div>
                                 <h4 class="font-semibold text-gray-800">Email</h4>
-                                <p class="text-gray-600">info@medcenter.ru</p>
+                                <p class="text-gray-600">info@medinformsystem.qunexx.ru</p>
                             </div>
                         </div>
                         <div class="flex items-start">
-                            <div class="w-10 h-10 flex items-center justify-center bg-blue-100 text-primary rounded-full mr-3 shrink-0">
-                                <i class="ri-time-line"></i>
-                            </div>
                             <div>
                                 <h4 class="font-semibold text-gray-800">Часы работы</h4>
                                 <p class="text-gray-600">Пн-Пт: 8:00 - 20:00</p>
@@ -51,27 +39,15 @@
                     <div class="bg-white p-6 rounded-lg shadow-sm">
                         <h3 class="text-xl font-semibold text-gray-800 mb-4">Мы в социальных сетях</h3>
                         <div class="flex space-x-4">
-                            <a href="#" class="w-10 h-10 flex items-center justify-center bg-blue-100 text-primary rounded-full hover:bg-blue-200 transition">
-                                <i class="ri-telegram-fill"></i>
-                            </a>
-                            <a href="#" class="w-10 h-10 flex items-center justify-center bg-blue-100 text-primary rounded-full hover:bg-blue-200 transition">
-                                <i class="ri-vk-fill"></i>
-                            </a>
-                            <a href="#" class="w-10 h-10 flex items-center justify-center bg-blue-100 text-primary rounded-full hover:bg-blue-200 transition">
-                                <i class="ri-instagram-line"></i>
-                            </a>
-                            <a href="#" class="w-10 h-10 flex items-center justify-center bg-blue-100 text-primary rounded-full hover:bg-blue-200 transition">
-                                <i class="ri-whatsapp-line"></i>
-                            </a>
                         </div>
                     </div>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow-sm">
                     <h3 class="text-xl font-semibold text-gray-800 mb-4">Напишите нам</h3>
-                    <form @submit.prevent="handleContactSubmit">
+                    <form @submit.prevent="submitFeedback">
                         <div class="mb-4">
                             <label for="contact-name" class="block text-gray-700 mb-2">ФИО</label>
-                            <input type="text" id="contact-name" v-model="contactForm.name" class="w-full p-3 border border-gray-300 rounded text-gray-700" placeholder="Иванов Иван Иванович" required>
+                            <input type="text" id="contact-name" v-model="contactForm.fio" class="w-full p-3 border border-gray-300 rounded text-gray-700" placeholder="Иванов Иван Иванович" required>
                         </div>
                         <div class="mb-4">
                             <label for="contact-email" class="block text-gray-700 mb-2">Email</label>
@@ -87,58 +63,50 @@
                         </div>
                         <button type="submit" class="w-full bg-primary text-white py-3 !rounded-button font-medium hover:bg-blue-600 transition whitespace-nowrap">Отправить сообщение</button>
                     </form>
+                    <div v-if="showSuccessMessage" class="text-green-600 text-sm font-medium flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                    Сообщение успешно отправлено
+                    </div>
                 </div>
             </div>
             <div class="mt-10 bg-white rounded-lg shadow-sm overflow-hidden h-96">
                 <div class="h-full w-full bg-gray-200 flex items-center justify-center text-gray-500" style="background-image: url('storage/map.png'); background-position: center; background-size: cover;">
                 </div>
             </div>
-            <Teleport to="body">
-                <div v-if="notification.show" :class="['fixed top-4 right-4 px-6 py-3 rounded shadow-lg text-white z-50', notification.type === 'success' ? 'bg-green-500' : 'bg-red-500']">
-                    {{ notification.message }}
-                </div>
-            </Teleport>
         </div>
     </section>
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue';
+import {reactive, ref} from 'vue';
+import {useForm} from "@inertiajs/vue3";
 
-const contactForm = reactive({
-    name: '',
+const contactForm = useForm({
+    fio: '',
     email: '',
-     phone: '',
     subject: '',
     message: '',
 });
-
-
-const notification = reactive({
-    show: false,
-    message: '',
-    type: 'success' as 'success' | 'error',
-});
-let notificationTimeout: number | undefined;
-const showNotification = (message: string, type: 'success' | 'error' = 'success', duration: number = 3000) => {
-    notification.message = message;
-    notification.type = type;
-    notification.show = true;
-    if (notificationTimeout) clearTimeout(notificationTimeout);
-    notificationTimeout = window.setTimeout(() => { notification.show = false; }, duration);
-};
-
-// --- Обработка отправки формы ---
-const handleContactSubmit = () => {
-    console.log('Contact form data:', { ...contactForm });
-    // Здесь будет вызов API для отправки сообщения
-    showNotification('Ваше сообщение успешно отправлено!', 'success');
-    // Очистка формы
-    Object.assign(contactForm, { name: '', email: '', subject: '', message: '' });
-    // contactForm.phone = ''; // Если используется телефон
+const showSuccessMessage = ref(false);
+const submitFeedback = () => {
+    contactForm.post(route('feedback.submit'), {
+        preserveScroll: true,
+        preserveState: true,
+        onSuccess: () => {
+            contactForm.reset();
+            showSuccessMessage.value = true;
+            setTimeout(() => {
+                showSuccessMessage.value = false;
+            }, 3000);
+        },
+        onError: (errors) => {
+            console.error('Ошибки при отправке:', errors);
+        }
+    });
 };
 </script>
 
 <style scoped>
-/* Специфичные стили для ContactSection, если нужны */
 </style>

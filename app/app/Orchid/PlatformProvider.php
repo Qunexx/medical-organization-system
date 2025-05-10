@@ -48,6 +48,10 @@ class PlatformProvider extends OrchidServiceProvider
                 ->icon('bs.bar-chart')
                 ->route('platform.example.charts'),
 
+            Menu::make(__('Обратная связь'))
+                ->icon('bs.shield')
+                ->title(__('Обратная связь'))
+                ->route('platform.feedback'),
 
             Menu::make('Через телеграм')
                 ->icon('bs.bar-chart')
