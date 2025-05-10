@@ -14,27 +14,27 @@
         <section class="quick-actions mb-12">
             <h2 class="sr-only">Быстрые действия</h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <article class="action-card group">
-                    <a href="{{ route('platform.systems.users') }}"
-                       class="block h-full p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-200 hover:border-indigo-200">
-                        <div class="flex items-start">
-                            <div class="action-icon mr-4 shrink-0">
-                                <x-orchid-icon path="people"
-                                               class="h-10 w-10 text-indigo-600 bg-indigo-50 p-2 rounded-lg"/>
-                            </div>
-                            <div class="action-content">
-                                <h3 class="text-lg font-semibold text-gray-900 mb-1">
-                                    Пользователи
-                                </h3>
-                                <p class="text-sm text-gray-500 leading-relaxed">
-                                    Управление учетными записями, правами доступа и ролями пользователей
-                                </p>
-                            </div>
-                        </div>
-                    </a>
-                </article>
-            </div>
+{{--            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">--}}
+{{--                <article class="action-card group">--}}
+{{--                    <a href="{{ route('platform.systems.users') }}"--}}
+{{--                       class="block h-full p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-200 hover:border-indigo-200">--}}
+{{--                        <div class="flex items-start">--}}
+{{--                            <div class="action-icon mr-4 shrink-0">--}}
+{{--                                <x-orchid-icon path="people"--}}
+{{--                                               class="h-10 w-10 text-indigo-600 bg-indigo-50 p-2 rounded-lg"/>--}}
+{{--                            </div>--}}
+{{--                            <div class="action-content">--}}
+{{--                                <h3 class="text-lg font-semibold text-gray-900 mb-1">--}}
+{{--                                    Пользователи--}}
+{{--                                </h3>--}}
+{{--                                <p class="text-sm text-gray-500 leading-relaxed">--}}
+{{--                                    Управление учетными записями, правами доступа и ролями пользователей--}}
+{{--                                </p>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                    </a>--}}
+{{--                </article>--}}
+{{--            </div>--}}
         </section>
     </main>
 </div>

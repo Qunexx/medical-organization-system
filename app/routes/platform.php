@@ -3,19 +3,19 @@
 declare(strict_types=1);
 
 use App\Models\Feedback;
-use App\Orchid\Screens\Examples\ExampleActionsScreen;
-use App\Orchid\Screens\Examples\ExampleCardsScreen;
-use App\Orchid\Screens\Examples\ExampleChartsScreen;
-use App\Orchid\Screens\Examples\ExampleFieldsAdvancedScreen;
-use App\Orchid\Screens\Examples\ExampleFieldsScreen;
-use App\Orchid\Screens\Examples\ExampleGridScreen;
-use App\Orchid\Screens\Examples\ExampleLayoutsScreen;
-use App\Orchid\Screens\Examples\ExampleScreen;
-use App\Orchid\Screens\Examples\ExampleTextEditorsScreen;
+use App\Models\Service;
 use App\Orchid\Screens\Feedback\FeedbackListScreen;
 use App\Orchid\Screens\Feedback\FeedbackViewScreen;
 use App\Orchid\Screens\PlatformScreen;
 use App\Orchid\Screens\Role\RoleEditScreen;
+use App\Orchid\Screens\Service\ServiceEditScreen;
+use App\Orchid\Screens\Service\ServiceListScreen;
+use App\Orchid\Screens\User\Admin\AdminEditScreen;
+use App\Orchid\Screens\User\Admin\AdminListScreen;
+use App\Orchid\Screens\User\Doctor\DoctorEditScreen;
+use App\Orchid\Screens\User\Doctor\DoctorListScreen;
+use App\Orchid\Screens\User\Patient\PatientEditScreen;
+use App\Orchid\Screens\User\Patient\PatientListScreen;
 use App\Orchid\Screens\User\UserEditScreen;
 use App\Orchid\Screens\User\UserListScreen;
 use App\Orchid\Screens\User\UserProfileScreen;
@@ -44,8 +44,7 @@ Route::middleware(\App\Http\Middleware\RoleMiddleware::class.':admin')->group(fu
         ->breadcrumbs(fn(Trail $trail) => $trail
             ->parent('platform.index')
             ->push(__('Profile'), route('platform.profile')));
-
-// Platform > System > Users > User
+// Platform > System > Users > Edit
     Route::screen('users/{user}/edit', UserEditScreen::class)
         ->name('platform.systems.users.edit')
         ->breadcrumbs(fn(Trail $trail, $user) => $trail
@@ -65,6 +64,69 @@ Route::middleware(\App\Http\Middleware\RoleMiddleware::class.':admin')->group(fu
         ->breadcrumbs(fn(Trail $trail) => $trail
             ->parent('platform.index')
             ->push(__('Users'), route('platform.systems.users')));
+
+// Platform > System > Admins > Edit
+    Route::screen('admins/{user}/edit', AdminEditScreen::class)
+        ->name('platform.admin.edit')
+        ->breadcrumbs(fn(Trail $trail, $user) => $trail
+            ->parent('platform.admin')
+            ->push($user->first_name, route('platform.admin.edit', $user)));
+
+// Platform > System > Admins > Create
+    Route::screen('admins/create', AdminEditScreen::class)
+        ->name('platform.admin.create')
+        ->breadcrumbs(fn(Trail $trail) => $trail
+            ->parent('platform.systems.admin')
+            ->push(__('Create'), route('platform.admin.create')));
+
+// Platform > System > Admins
+    Route::screen('admins', AdminListScreen::class)
+        ->name('platform.admin')
+        ->breadcrumbs(fn(Trail $trail) => $trail
+            ->parent('platform.index')
+            ->push('Администраторы', route('platform.admin')));
+
+    // Platform > System > Patients > Edit
+    Route::screen('patients/{user}/edit', PatientEditScreen::class)
+        ->name('platform.admin.edit')
+        ->breadcrumbs(fn(Trail $trail, $user) => $trail
+            ->parent('platform.patient')
+            ->push($user->first_name, route('platform.admin.edit', $user)));
+
+// Platform > System > Patients  > Create
+    Route::screen('patients/create', PatientEditScreen::class)
+        ->name('platform.patient.create')
+        ->breadcrumbs(fn(Trail $trail) => $trail
+            ->parent('platform.systems.patient')
+            ->push(__('Create'), route('platform.patient.create')));
+
+// Platform > System > Patients
+    Route::screen('patients', PatientListScreen::class)
+        ->name('platform.patient')
+        ->breadcrumbs(fn(Trail $trail) => $trail
+            ->parent('platform.index')
+            ->push('Пациенты', route('platform.patient')));
+
+    // Platform > System > Doctors > Edit
+    Route::screen('doctors/{user}/edit', DoctorEditScreen::class)
+        ->name('platform.doctor.edit')
+        ->breadcrumbs(fn(Trail $trail, $user) => $trail
+            ->parent('platform.patient')
+            ->push($user->first_name, route('platform.admin.edit', $user)));
+
+// Platform > System > Doctors > Create
+    Route::screen('doctors/create', DoctorEditScreen::class)
+        ->name('platform.doctor.create')
+        ->breadcrumbs(fn(Trail $trail) => $trail
+            ->parent('platform.systems.patient')
+            ->push(__('Create'), route('platform.patient.create')));
+
+// Platform > System > Doctors
+    Route::screen('doctors', DoctorListScreen::class)
+        ->name('platform.doctor')
+        ->breadcrumbs(fn(Trail $trail) => $trail
+            ->parent('platform.index')
+            ->push('Врачи', route('platform.doctor')));
 
 // Platform > System > Roles > Role
     Route::screen('roles/{role}/edit', RoleEditScreen::class)
@@ -88,13 +150,6 @@ Route::middleware(\App\Http\Middleware\RoleMiddleware::class.':admin')->group(fu
             ->push(__('Roles'), route('platform.systems.roles')));
 
 
-    Route::screen('users/create', UserEditScreen::class)
-        ->name('platform.systems.users.create')
-        ->breadcrumbs(fn(Trail $trail) => $trail
-            ->parent('platform.systems.users')
-            ->push(__('Create'), route('platform.systems.users.create')));
-
-
     // Platform > System > Feedback
     Route::screen('feedback', FeedbackListScreen::class)
         ->name('platform.feedback')
@@ -102,6 +157,7 @@ Route::middleware(\App\Http\Middleware\RoleMiddleware::class.':admin')->group(fu
             ->parent('platform.index')
             ->push('Обратная связь', route('platform.feedback')));
 
+    // Platform > System > Feedback > View
     Route::screen('feedback/{feedback}', FeedbackViewScreen::class)
         ->name('platform.feedback.view')
         ->breadcrumbs(function (Trail $trail, Feedback $feedback) {
@@ -110,25 +166,29 @@ Route::middleware(\App\Http\Middleware\RoleMiddleware::class.':admin')->group(fu
                 ->push($feedback->id, route('platform.feedback.view',$feedback));
         });
 
-
-
-
-
-    // Example...
-    Route::screen('example', ExampleScreen::class)
-        ->name('platform.example')
+    // Platform > System > Service
+    Route::screen('service', ServiceListScreen::class)
+        ->name('platform.service')
         ->breadcrumbs(fn(Trail $trail) => $trail
             ->parent('platform.index')
-            ->push('Example Screen'));
+            ->push('Услуги', route('platform.service')));
 
-    Route::screen('/examples/form/fields', ExampleFieldsScreen::class)->name('platform.example.fields');
-    Route::screen('/examples/form/advanced', ExampleFieldsAdvancedScreen::class)->name('platform.example.advanced');
-    Route::screen('/examples/form/editors', ExampleTextEditorsScreen::class)->name('platform.example.editors');
-    Route::screen('/examples/form/actions', ExampleActionsScreen::class)->name('platform.example.actions');
+    // Platform > System > Service > Create
+    Route::screen('service/create', ServiceEditScreen::class)
+        ->name('platform.service.create')
+        ->breadcrumbs(function (Trail $trail) {
+            return $trail
+                ->parent('platform.service')
+                ->push('Создать', route('platform.service.create'));
+        });
 
-    Route::screen('/examples/layouts', ExampleLayoutsScreen::class)->name('platform.example.layouts');
-    Route::screen('/examples/grid', ExampleGridScreen::class)->name('platform.example.grid');
-    Route::screen('/examples/charts', ExampleChartsScreen::class)->name('platform.example.charts');
-    Route::screen('/examples/cards', ExampleCardsScreen::class)->name('platform.example.cards');
+    // Platform > System > Service > Edit
+    Route::screen('service/{service}/edit', ServiceEditScreen::class)
+        ->name('platform.service.edit')
+        ->breadcrumbs(function (Trail $trail, Service $service) {
+            return $trail
+                ->parent('platform.service')
+                ->push($service->id, route('platform.service.edit', $service));
+        });
+
 });
-// Route::screen('idea', Idea::class, 'platform.screens.idea');
