@@ -71,6 +71,7 @@ class DoctorEditLayout extends Rows
 
             Input::make('doctor.years_of_experience')
                 ->type('number')
+                ->required()
                 ->title('Опыт работы (лет)')
                 ->min(0)
                 ->max(60),
@@ -82,11 +83,13 @@ class DoctorEditLayout extends Rows
 
             Relation::make('doctor.specializations')
                 ->fromModel(Specialization::class, 'name')
+                ->required()
                 ->title('Специализации')
                 ->multiple(),
 
             Relation::make('doctor.services')
                 ->fromModel(Service::class, 'name')
+                ->required()
                 ->title('Медицинские услуги')
                 ->multiple(),
         ];

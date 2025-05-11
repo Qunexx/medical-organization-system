@@ -35,29 +35,35 @@
                                 Стаж работы: {{ doctor.years_of_experience }} лет
                             </p>
 
-                            <Link :href="route('doctors.show', doctor.id)"
-                                  class="text-primary font-medium hover:underline text-sm flex items-center">
+                            <Link
+                                :href="route('home') + `#appointment`"
+                                class="text-primary font-medium hover:underline text-sm flex items-center">
                                 Записаться на прием
+                                <i class="ri-arrow-right-line ml-1"></i>
+                            </Link>
+
+                            <Link
+                                :href="route('doctors.show',doctor.id)"
+                                class="text-primary font-medium hover:underline text-sm flex items-center">
+                                Подробнее
                                 <i class="ri-arrow-right-line ml-1"></i>
                             </Link>
                         </div>
                     </div>
                 </div>
 
-                <div class="mt-10 text-center" v-if="doctors.links.length > 3">
-                    <nav class="flex gap-1 justify-center">
+                <div class="mt-8 flex justify-center">
+                    <nav class="flex gap-2">
                         <Link
                             v-for="(link, index) in doctors.links"
                             :key="index"
                             :href="link.url || '#'"
-                            class="px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                            class="px-4 py-2 rounded-md"
                             :class="{
-                                'bg-primary text-white hover:bg-primary-dark': link.active,
-                                'text-gray-500 hover:bg-gray-100': !link.active && link.url,
-                                'text-gray-300 cursor-not-allowed': !link.url,
-                                'hidden md:inline-block': index !== 0 && index !== doctors.links.length - 1
-                            }"
-                            preserve-scroll
+              'bg-primary text-white': link.active,
+              'text-gray-500 hover:bg-gray-100': !link.active && link.url,
+              'text-gray-400 cursor-not-allowed': !link.url
+            }"
                             v-html="link.label"
                         />
                     </nav>

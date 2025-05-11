@@ -30,7 +30,7 @@
                             Стаж работы: {{ doctor.years_of_experience }} лет
                         </p>
                         <Link
-                            :href="route('home') + `#appointment?doctor=${doctor.id}`"
+                            :href="route('home') + `#appointment`"
                             class="text-primary font-medium hover:underline text-sm flex items-center">
                             Записаться на прием
                             <i class="ri-arrow-right-line ml-1"></i>

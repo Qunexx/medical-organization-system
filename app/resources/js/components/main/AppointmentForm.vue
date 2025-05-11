@@ -8,7 +8,6 @@
 
             <form @submit.prevent="handleAppointmentSubmit" class="bg-white rounded-lg shadow-md p-6 md:p-8 max-w-4xl mx-auto">
                 <div class="grid md:grid-cols-2 gap-8">
-                    <!-- Левая колонка -->
                     <div>
                         <h3 class="text-xl font-semibold text-gray-800 mb-4">Выберите специалиста и время</h3>
 
@@ -21,15 +20,14 @@
                                     class="w-full p-3 border border-gray-300 rounded text-gray-700 bg-white appearance-none pr-8"
                                 >
                                     <option value="">Выберите специальность</option>
-                                    <option value="cardiology">Кардиология</option>
-                                    <option value="neurology">Неврология</option>
-                                    <option value="gastroenterology">Гастроэнтерология</option>
-                                    <option value="endocrinology">Эндокринология</option>
-                                    <option value="ophthalmology">Офтальмология</option>
+                                    <option
+                                        v-for="specialty in uniqueSpecialties"
+                                        :key="specialty"
+                                        :value="specialty"
+                                    >
+                                        {{ specialty }}
+                                    </option>
                                 </select>
-                                <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                    <i class="ri-arrow-down-s-line text-gray-500"></i>
-                                </div>
                             </div>
                         </div>
 
@@ -42,14 +40,16 @@
                                     class="w-full p-3 border border-gray-300 rounded text-gray-700 bg-white appearance-none pr-8"
                                 >
                                     <option value="">Выберите врача</option>
-                                    <option value="ivanov">Иванов Сергей Петрович</option>
-                                    <option value="petrova">Петрова Анна Михайловна</option>
-                                    <option value="smirnov">Смирнов Алексей Владимирович</option>
-                                    <option value="kozlova">Козлова Елена Дмитриевна</option>
+                                    <option
+                                        v-for="doctor in filteredDoctors"
+                                        :key="doctor.id"
+                                        :value="doctor.id"
+                                    >
+                                        {{ doctor.user.last_name }}
+                                        {{ doctor.user.first_name }}
+                                        ({{ doctorSpecializations(doctor) }})
+                                    </option>
                                 </select>
-                                <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                    <i class="ri-arrow-down-s-line text-gray-500"></i>
-                                </div>
                             </div>
                         </div>
 
@@ -85,7 +85,6 @@
                         </div>
                     </div>
 
-                    <!-- Правая колонка -->
                     <div>
                         <h3 class="text-xl font-semibold text-gray-800 mb-4">Ваши данные</h3>
 
@@ -197,23 +196,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted, computed, watch } from 'vue';
 import { usePage, router } from '@inertiajs/vue3';
+
 
 const page = usePage();
 const isAuthenticated = ref(false);
-
-// Автозаполнение данных профиля
-onMounted(() => {
-    if (page.props.auth.user) {
-        isAuthenticated.value = true;
-        const user = page.props.auth.user;
-        appointmentForm.name = [user.last_name, user.first_name, user.middle_name]
-            .filter(Boolean).join(' ');
-        appointmentForm.phone = user.phone || '';
-        appointmentForm.email = user.email || '';
-    }
-});
+const doctors = ref<Array<any>>([]);
+const selectedDoctorFromURL = ref('');
 
 interface AppointmentForm {
     specialty: string;
@@ -238,6 +228,98 @@ const appointmentForm = reactive<AppointmentForm>({
     comment: '',
     consent: false,
 });
+
+onMounted(() => {
+    doctors.value = page.props.doctors;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const doctorId = urlParams.get('doctor');
+
+    if (doctorId) {
+        selectedDoctorFromURL.value = doctorId;
+        handleURLPreselection();
+    }
+
+    if (page.props.auth.user) {
+        isAuthenticated.value = true;
+        const user = page.props.auth.user;
+        appointmentForm.name = [user.last_name, user.first_name, user.middle_name]
+            .filter(Boolean).join(' ');
+        appointmentForm.phone = user.phone || '';
+        appointmentForm.email = user.email || '';
+    }
+});
+
+const handleURLPreselection = () => {
+    const doctor = doctors.value.find(d => d.id == selectedDoctorFromURL.value);
+    if (doctor) {
+        appointmentForm.doctor = doctor.id;
+        if (doctor.specializations.length > 0) {
+            appointmentForm.specialty = doctor.specializations[0].name;
+        }
+        scrollToAppointment();
+        doctors.value = [...doctors.value];
+    }
+};
+
+const scrollToAppointment = () => {
+    setTimeout(() => {
+        const element = document.getElementById('appointment');
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, 100);
+};
+
+const uniqueSpecialties = computed(() => {
+    const specialties = new Set<string>();
+
+    if (appointmentForm.doctor) {
+        const doctor = doctors.value.find(d => d.id === appointmentForm.doctor);
+        doctor?.specializations.forEach((spec: any) => {
+            specialties.add(spec.name);
+        });
+    } else {
+        doctors.value.forEach(doctor => {
+            doctor.specializations.forEach((spec: any) => {
+                specialties.add(spec.name);
+            });
+        });
+    }
+
+    return Array.from(specialties).sort();
+});
+
+const filteredDoctors = computed(() => {
+    if (!appointmentForm.specialty) return doctors.value;
+    return doctors.value.filter(doctor =>
+        doctor.specializations.some((spec: any) =>
+            spec.name === appointmentForm.specialty
+        )
+    );
+});
+
+const doctorSpecializations = (doctor: any) => {
+    return doctor.specializations.map((spec: any) => spec.name).join(', ');
+};
+
+watch(() => appointmentForm.doctor, (newVal, oldVal) => {
+    if (newVal) {
+        const doctor = doctors.value.find(d => d.id === newVal);
+        if (doctor?.specializations?.length) {
+            appointmentForm.specialty = doctor.specializations[0].name;
+        }
+    } else {
+        appointmentForm.specialty = '';
+    }
+});
+
+watch(() => appointmentForm.specialty, (newVal, oldVal) => {
+    if (newVal && !oldVal) {
+        appointmentForm.doctor = '';
+    }
+});
+
 
 const availableTimes = ref(['09:00', '09:30', '10:00', '10:30', '11:00', '11:30']);
 
