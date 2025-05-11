@@ -1,89 +1,102 @@
-<!-- resources/js/Pages/Patient/Appointments/Index.vue -->
 <template>
     <ProfileLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Мои записи
+                Детали записи №{{ appointment.id }}
             </h2>
         </template>
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 border-b">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <select
-                                v-model="filters.status"
-                                class="border-gray-300 rounded-md shadow-sm focus:border-primary focus:ring-primary"
-                            >
-                                <option value="">Все статусы</option>
-                                <option value="pending">Ожидание</option>
-                                <option value="confirmed">Подтверждено</option>
-                                <option value="completed">Завершено</option>
-                                <option value="canceled">Отменено</option>
-                            </select>
+                    <div class="p-6 space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-500">Дата и время приема:</label>
+                                <p class="mt-1 text-lg text-gray-900">
+                                    {{ formatDateTime(appointment.appointment_date) }}
+                                </p>
+                            </div>
 
-                            <input
-                                type="date"
-                                v-model="filters.date"
-                                class="border-gray-300 rounded-md shadow-sm focus:border-primary focus:ring-primary"
+                            <div>
+                                <label class="block text-sm font-medium text-gray-500">Статус:</label>
+                                <span
+                                    class="mt-1 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
+                                    :class="statusClasses(appointment.status)"
+                                >
+                                    {{ statusText(appointment.status) }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="border-t pt-4">
+                            <h3 class="text-lg font-medium mb-2">Информация о враче</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm text-gray-500">ФИО врача:</label>
+                                    <p class="font-medium">
+                                        {{ appointment.doctor.user.first_name }}
+                                        {{ appointment.doctor.user.last_name }}
+                                        {{ appointment.doctor.user.middle_name }}
+                                    </p>
+                                    <Link
+                                        :href="route('doctors.show', appointment.doctor_id)"
+                                        class="inline-flex items-center px-4 py-2 bg-gray-100 border border-transparent rounded-md font-semibold text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition"
+                                    >
+                                        ← Детали врача
+                                    </Link>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm text-gray-500">Специализация:</label>
+                                    <p class="font-medium">
+                                        {{ appointment.specialization.name }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border-t pt-4">
+                            <h3 class="text-lg font-medium mb-2">Детали записи</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm text-gray-500">Ваш комментарий:</label>
+                                    <p class="whitespace-pre-wrap">
+                                        {{ appointment.patient_comment || 'Не заполнено' }}
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm text-gray-500">Заключение врача:</label>
+                                    <p class="whitespace-pre-wrap">
+                                        {{ appointment.conclusion || 'Не заполнено' }}
+                                    </p>
+                                </div>
+
+                                <div v-if="appointment.cancel_reason">
+                                    <label class="block text-sm text-gray-500">Причина отмены:</label>
+                                    <p class="text-red-600">{{ appointment.cancel_reason }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border-t pt-6 flex justify-between items-center">
+                            <Link
+                                :href="route('patient.myConsultation')"
+                                class="inline-flex items-center px-4 py-2 bg-gray-100 border border-transparent rounded-md font-semibold text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition"
                             >
+                                ← Назад к списку
+                            </Link>
+
+                            <button
+                                v-if="canCancel(appointment)"
+                                @click="cancelAppointment(appointment)"
+                                class="inline-flex items-center px-4 py-2 bg-red-100 border border-transparent rounded-md font-semibold text-red-700 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition"
+                            >
+                                Отменить запись
+                            </button>
                         </div>
                     </div>
-
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Дата</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Врач</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Специальность</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Статус</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Действия</th>
-                            </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200">
-                            <tr
-                                v-for="appointment in appointments.data"
-                                :key="appointment.id"
-                                class="hover:bg-gray-50"
-                            >
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    {{ formatDate(appointment.date) }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    {{ appointment.doctor.full_name }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    {{ appointment.doctor.specialization }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                    <span
-                        class="px-2 py-1 text-sm rounded-full"
-                        :class="statusClasses(appointment.status)"
-                    >
-                      {{ statusText(appointment.status) }}
-                    </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <button
-                                        v-if="canCancel(appointment)"
-                                        @click="cancelAppointment(appointment)"
-                                        class="text-red-600 hover:text-red-800"
-                                    >
-                                        Отменить
-                                    </button>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Пагинация -->
-                    <Pagination
-                        :links="links"
-                        class="p-4"
-                    />
                 </div>
             </div>
         </div>
@@ -92,22 +105,21 @@
 
 <script setup lang="ts">
 import ProfileLayout from '../../layouts/ProfileLayout.vue';
-import Pagination from '../../components/Pagination.vue';
-import { router } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import {Link, router} from '@inertiajs/vue3';
 
 const props = defineProps({
-    appointments: Object,
-    filters: Object,
-    links: Object,
+    appointment: Object
 });
 
-const filters = ref({
-    status: props.filters.status || '',
-    date: props.filters.date || ''
-});
+const statusMap = {
+    1: { text: 'Принята', class: 'bg-green-100 text-green-800' },
+    2: { text: 'Отменена', class: 'bg-red-100 text-red-800' },
+    3: { text: 'Подтверждена', class: 'bg-blue-100 text-blue-800' },
+    4: { text: 'Не подтверждена', class: 'bg-yellow-100 text-yellow-800' },
+    5: { text: 'Завершена', class: 'bg-gray-100 text-gray-800' },
+};
 
-const formatDate = (dateString: string) => {
+const formatDateTime = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('ru-RU', {
         day: 'numeric',
         month: 'long',
@@ -117,33 +129,27 @@ const formatDate = (dateString: string) => {
     });
 };
 
-const statusClasses = (status: string) => {
-    const classes = {
-        pending: 'bg-yellow-100 text-yellow-800',
-        confirmed: 'bg-green-100 text-green-800',
-        completed: 'bg-blue-100 text-blue-800',
-        canceled: 'bg-red-100 text-red-800'
-    };
-    return classes[status] || 'bg-gray-100 text-gray-800';
+const statusClasses = (statusValue: number) => {
+    return statusMap[statusValue]?.class || 'bg-gray-100 text-gray-800';
 };
 
-const statusText = (status: string) => {
-    const texts = {
-        pending: 'Ожидание',
-        confirmed: 'Подтверждено',
-        completed: 'Завершено',
-        canceled: 'Отменено'
-    };
-    return texts[status] || 'Неизвестно';
+const statusText = (statusValue: number) => {
+    return statusMap[statusValue]?.text || 'Неизвестно';
 };
 
 const canCancel = (appointment: any) => {
-    return ['pending', 'confirmed'].includes(appointment.status);
+    return [1, 3].includes(appointment.status);
 };
 
 const cancelAppointment = (appointment: any) => {
-    if (confirm('Вы уверены, что хотите отменить запись?')) {
-        router.delete(route('appointments.destroy', appointment.id));
+    if (confirm('Вы уверены, что хотите отменить эту запись?')) {
+        router.delete(route('patient.appointment.delete', appointment.id));
     }
 };
 </script>
+
+<style scoped>
+.whitespace-pre-wrap {
+    white-space: pre-wrap;
+}
+</style>

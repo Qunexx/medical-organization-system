@@ -404,7 +404,7 @@ const handleAppointmentSubmit = () => {
         return;
     }
 
-        router.post(route('appointment.make'), {
+        router.post(route('patient.appointment.make'), {
             doctor_id: appointmentForm.doctor,
             date: appointmentForm.date,
             specialty: appointmentForm.specialty,

@@ -8,21 +8,26 @@ use App\Models\Specialization;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 
 class ConsultationController extends Controller
 {
     public function myConsultations(Request $request)
     {
-        return Inertia::render('patient/Consultation', [
-            'appointments' => [],
-            'filters' => $request->only('status', 'date'),
-            'links' => [],
+        $appointments = $request->user()->appointments()
+            ->with(['doctor.user', 'specialization'])
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        return Inertia::render('patient/Consultations', [
+            'appointments' => $appointments,
+            'filters' => $request->only(['status', 'date'])
         ]);
     }
 
     public function makeAppointment(Request $request)
     {
-        $appointment = new Appointment();
         $validated = $request->validate([
             'doctor_id' => 'required|exists:doctors,id',
             'date' => [
@@ -33,7 +38,7 @@ class ConsultationController extends Controller
             'time' => [
                 'required',
                 'date_format:H:i',
-                function ($attribute, $value, $fail) use ($appointment, $request) {
+                function ($attribute, $value, $fail) use ($request) {
                     Appointment::validateTimeSlot($request, $value, $fail);
                 },
             ],
@@ -58,6 +63,33 @@ class ConsultationController extends Controller
         ]);
 
         return back()->with('success');
+    }
+
+    public function show(Appointment $appointment)
+    {
+        if (auth()->user()->id !== $appointment->user_id) {
+            throw new AccessDeniedException('Нет доступа для просмотра данной записи');
+        }
+
+        $appointment->load(['doctor.user', 'specialization']);
+
+        return Inertia::render('patient/Consultation', [
+            'appointment' => $appointment
+        ]);
+    }
+
+    public function destroy(Appointment $appointment)
+    {
+        if (auth()->user()->id !== $appointment->user_id) {
+            throw new AccessDeniedException('Нет доступа для просмотра данной записи');
+        }
+
+        $appointment->update([
+            'status' => 'canceled',
+            'cancel_reason' => 'Отменено пациентом'
+        ]);
+
+        return redirect()->back()->with('success', 'Запись успешно отменена');
     }
 
 }

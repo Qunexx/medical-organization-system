@@ -49,12 +49,14 @@
                             variant="success"
                             @click=""
                         />
+                        <Link :href="route('patient.notification')">
                         <ActionButton
                             icon="ri-chat-smile-2-line"
-                            label="Мои чаты"
+                            label="Уведомления"
                             variant="success"
                             @click=""
                         />
+                        </Link>
                         <Link :href="route('patient.profile')">
                         <ActionButton
                             icon="ri-settings-3-line"

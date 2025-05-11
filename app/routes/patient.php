@@ -18,16 +18,10 @@ Route::middleware(['auth'])->group(function () {
 
         Route::prefix('consultation')->group(function () {
             Route::get('/', [\App\Http\Controllers\ConsultationController::class, 'myConsultations'])->name('patient.myConsultation');
+            Route::post('/make-appointment', [\App\Http\Controllers\ConsultationController::class, 'makeAppointment'])->name('patient.appointment.make');
+            Route::get('/{appointment}', [\App\Http\Controllers\ConsultationController::class, 'show'])->name('patient.appointment.view');
+            Route::post('/{appointment}', [\App\Http\Controllers\ConsultationController::class, 'destroy'])->name('patient.appointment.delete');
         });
-
-        Route::post('/make-appointment', [\App\Http\Controllers\ConsultationController::class, 'makeAppointment'])->name('appointment.make');
-//
-//
-//        Route::prefix('chat')->group(function () {
-//            Route::get('/', [\App\Http\Controllers\ChatController::class, 'index'])->name('chat.index');
-//            Route::get('/{consultation}', [\App\Http\Controllers\ChatController::class, 'show'])->name('chat.show');
-//            Route::post('/{consultation}/message', [\App\Http\Controllers\ChatController::class, 'sendMessage'])->name('chat.message.send');
-//        });
 
     });
 });

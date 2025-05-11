@@ -92,7 +92,7 @@ const form = useForm({
 });
 
 const currentAvatarUrl = computed(() =>
-    avatarUrl.value || '/images/default-avatar.jpg'
+    avatarUrl.value || '/storage/emptyAvatar.jpg'
 );
 
 const showFilePicker = () => {
