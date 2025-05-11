@@ -49,7 +49,6 @@ class DoctorEditScreen extends Screen
                 'specializations',
                 'services',
                 'user.roles',
-                'user.avatar'
             ]);
         }
 
@@ -156,10 +155,22 @@ class DoctorEditScreen extends Screen
             $doctor->specializations()->sync((array)$request->input('doctor.specializations'));
             $doctor->services()->sync((array)$request->input('doctor.services'));
 
-            if ($request->hasFile('user.avatar')) {
+            if ($request->input('remove_avatar') == true) {
+                if ($user->avatar && $user->avatar->url) {
+                    Storage::disk('public')->delete($user->avatar->url);
+                    $user->avatar()->delete();
+                }
+            }
+
+            if ($request->hasFile('avatar')) {
+                if ($user->avatar && $user->avatar->url) {
+                    Storage::disk('public')->delete($user->avatar->url);
+                }
+                $path = $request->file('avatar')
+                    ->store(User::AVATAR_PATH, 'public');
                 $user->avatar()->updateOrCreate(
                     ['user_id' => $user->id],
-                    ['url' => $request->file('user.avatar')->store(User::AVATAR_PATH)]
+                    ['url' => $path]
                 );
             }
 

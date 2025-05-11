@@ -6,7 +6,9 @@ namespace App\Orchid\Layouts\User\Doctor;
 
 use App\Models\Service;
 use App\Models\Specialization;
+use App\Models\User;
 use Orchid\Screen\Field;
+use Orchid\Screen\Fields\CheckBox;
 use Orchid\Screen\Fields\Date;
 use Orchid\Screen\Fields\DateTimer;
 use Orchid\Screen\Fields\Input;
@@ -54,11 +56,18 @@ class DoctorEditLayout extends Rows
                 ->min(8)
                 ->required(!$this->query->get('doctor')?->exists),
 
-            Upload::make('user.avatar')
+            Input::make('avatar')
+                ->type('file')
                 ->title('Аватар')
                 ->acceptedFiles('image/*')
-                ->maxFiles(1)
+                ->help('Максимальный размер: 2MB')
+
                 ,
+
+            CheckBox::make('remove_avatar')
+                ->sendTrueOrFalse()
+                ->title('Удалить текущий аватар')
+                ->help('Отметьте чтобы удалить текущий аватар'),
 
             Input::make('doctor.years_of_experience')
                 ->type('number')
