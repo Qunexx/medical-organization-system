@@ -6,11 +6,12 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Orchid\Filters\Filterable;
+use Orchid\Metrics\Chartable;
 use Orchid\Screen\AsSource;
 
 class Appointment extends Model
 {
-    use AsSource, Filterable;
+    use AsSource, Filterable, Chartable;
     /**
      * The attributes that are mass assignable.
      *

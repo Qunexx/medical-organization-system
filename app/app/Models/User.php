@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Orchid\Filters\Types\Like;
 use Orchid\Filters\Types\Where;
 use Orchid\Filters\Types\WhereDateStartEnd;
+use Orchid\Metrics\Chartable;
 use Orchid\Platform\Models\User as Authenticatable;
 
 class User extends Authenticatable
 {
 
+    use Chartable;
     const AVATAR_PATH = 'avatars';
      /**
      * The attributes that are mass assignable.

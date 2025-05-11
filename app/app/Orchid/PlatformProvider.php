@@ -34,39 +34,22 @@ class PlatformProvider extends OrchidServiceProvider
     public function menu(): array
     {
         return [
-
             Menu::make('Записи на консультации')
-                ->icon('bs.bar-chart')
+                ->icon('bs.calendar3')
                 ->route('platform.appointment')
                 ->title(__('Записи')),
-//
-//            Menu::make('Завершённые записи')
-//                ->icon('bs.bar-chart')
-//                ->route('platform.example.charts'),
-//
-//            Menu::make('Отменённые записи')
-//                ->icon('bs.bar-chart')
-//                ->route('platform.example.charts'),
-//
-//            Menu::make('Через телеграм')
-//                ->icon('bs.bar-chart')
-//                ->route('platform.example.charts')
-//                ->title(__('Уведомления')),
-//
-//            Menu::make('Через почту')
-//                ->icon('bs.bar-chart')
-//                ->route('platform.example.charts'),
+
             Menu::make(__('Услуги'))
-                ->icon('bs.shield')
+                ->icon('bs.gear')
                 ->title(__('Система'))
                 ->route('platform.service'),
 
             Menu::make(__('Специализации'))
-                ->icon('bs.shield')
+                ->icon('bs.tags')
                 ->route('platform.specialization'),
 
             Menu::make(__('Обратная связь'))
-                ->icon('bs.shield')
+                ->icon('bs.chat')
                 ->title(__('Обратная связь'))
                 ->route('platform.feedback'),
 
@@ -77,31 +60,28 @@ class PlatformProvider extends OrchidServiceProvider
                 ->title(__('Пользователи')),
 
             Menu::make('Пациенты')
-                ->icon('bs.people')
+                ->icon('bs.person-heart')
                 ->route('platform.patient')
-                ->permission('platform.systems.users')
-            ,
+                ->permission('platform.systems.users'),
 
             Menu::make('Врачи')
-                ->icon('bs.people')
-                ->route('platform.doctor')
-            ,
+                ->icon('bs.person-badge')
+                ->route('platform.doctor'),
 
             Menu::make('Администраторы')
-                ->icon('bs.people')
-                ->route('platform.admin')
-            ,
+                ->icon('bs.shield-check')
+                ->route('platform.admin'),
 
             Menu::make(__('Roles'))
-                ->icon('bs.shield')
+                ->icon('bs.shield-lock')
                 ->route('platform.systems.roles')
                 ->permission('platform.systems.roles')
                 ->divider(),
-//
-//            Menu::make('Графики')
-//                ->icon('bs.bar-chart')
-//                ->route('platform.example.charts')
-//                ->title(__('Статистика')),
+
+            Menu::make('Статистика')
+                ->icon('bs.bar-chart-line')
+                ->route('platform.stats')
+                ->title(__('Аналитика')),
         ];
     }
 

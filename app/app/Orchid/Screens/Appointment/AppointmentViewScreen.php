@@ -196,6 +196,8 @@ class AppointmentViewScreen extends Screen
                     </span>";
                     }),
 
+                Sight::make('created_at', 'Создана'),
+
                 Sight::make('patient_comment', 'Комментарий пациента')
                     ->render(fn () => $this->appointment->patient_comment ?: 'Нет комментария'),
             ])->title('Основная информация'),

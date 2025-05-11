@@ -16,6 +16,7 @@ use App\Orchid\Screens\Service\ServiceEditScreen;
 use App\Orchid\Screens\Service\ServiceListScreen;
 use App\Orchid\Screens\Specialization\SpecializationEditScreen;
 use App\Orchid\Screens\Specialization\SpecializationListScreen;
+use App\Orchid\Screens\StatsDashboardScreen;
 use App\Orchid\Screens\User\Admin\AdminEditScreen;
 use App\Orchid\Screens\User\Admin\AdminListScreen;
 use App\Orchid\Screens\User\Doctor\DoctorEditScreen;
@@ -246,6 +247,15 @@ Route::middleware(\App\Http\Middleware\RoleMiddleware::class.':admin')->group(fu
             return $trail
                 ->parent('platform.appointment')
                 ->push("Консультация #{$appointment->id}", route('platform.appointment.view', $appointment));
+        });
+
+    // Platform > System > Stats
+    Route::screen('stats', StatsDashboardScreen::class)
+        ->name('platform.stats')
+        ->breadcrumbs(function (Trail $trail) {
+            return $trail
+                ->parent('platform.index')
+                ->push('Статистика');
         });
 
 });

@@ -63,6 +63,9 @@ class AppointmentListLayout extends Table
                 })
                 ->sort(),
 
+            TD::make('created_at', 'Создана')
+              ,
+
             TD::make(__('Действия'))
                 ->align(TD::ALIGN_CENTER)
                 ->width('150px')
