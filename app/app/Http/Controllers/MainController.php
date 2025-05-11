@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\RoleEnum;
+use App\Models\Doctor;
 use App\Models\Feedback;
 use App\Models\Role;
 use App\Models\Service;
@@ -16,9 +17,17 @@ class MainController extends Controller
     public function index(Request $request): Response
     {
         $services = Service::take(6)->get();
+        $doctors = Doctor::with(['user', 'specializations'])
+            ->when($request->doctor, function($query, $doctorId) {
+                $query->where('id', $doctorId);
+            })
+            ->get();
+
         return Inertia::render('MainPage',
         [
             'services' => $services,
+            'doctors' => $doctors,
+            'selectedDoctor' => $request->input('doctor')
         ]);
     }
 
@@ -66,6 +75,34 @@ class MainController extends Controller
 
         return Inertia::render('Service', [
             'service' => $service->makeHidden(['created_at', 'updated_at'])
+        ]);
+    }
+
+    public function doctors(Request $request)
+    {
+        $doctors = Doctor::with([
+            'user:id,first_name,last_name,middle_name',
+            'user.avatar:id,user_id,url',
+            'specializations:id,name',
+            'services:id,name'
+        ])->paginate(12);
+
+        return Inertia::render('Doctors', [
+            'doctors' => $doctors
+        ]);
+    }
+
+    public function showDoctor(Doctor $doctor)
+    {
+        $doctor->load([
+            'user:id,first_name,last_name,middle_name',
+            'user.avatar:id,user_id,url',
+            'specializations:id,name',
+            'services:id,name',
+        ]);
+
+        return Inertia::render('Doctor', [
+            'doctor' => $doctor->makeHidden(['created_at', 'updated_at'])
         ]);
     }
 

@@ -5,67 +5,64 @@
                 <h2 class="text-3xl font-bold text-gray-800 mb-4">Наши специалисты</h2>
                 <p class="text-gray-600 max-w-3xl mx-auto">Команда высококвалифицированных врачей с многолетним опытом работы</p>
             </div>
-            <div class="grid md:grid-cols-4 gap-6">
-                <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition overflow-hidden">
-                    <img src="#" alt="[Фото доктора Иванова]" class="w-full h-64 object-cover object-top">
+            <div class="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div v-for="doctor in doctors.slice(0, 6)" :key="doctor.id"
+                     class="bg-white rounded-lg shadow-sm hover:shadow-md transition overflow-hidden">
+                    <img :src="doctor.user.avatar?.url
+                             ? `/storage/${doctor.user.avatar.url}`
+                             : '/storage/emptyAvatar.jpg'"
+                         class="w-full h-64 object-cover object-top"
+                         :alt="`Фото доктора ${doctor.user.last_name}`">
                     <div class="p-4">
-                        <h3 class="text-lg font-semibold text-gray-800">Иванов Сергей Петрович</h3>
-                        <p class="text-primary font-medium mb-2">Кардиолог</p>
-                        <p class="text-gray-600 text-sm mb-3">Кандидат медицинских наук, стаж работы 15 лет</p>
-                        <a href="#" class="text-primary font-medium hover:underline text-sm flex items-center">
+                        <h3 class="text-lg font-semibold text-gray-800">
+                            {{ doctor.user.last_name }}
+                            {{ doctor.user.first_name }}
+                            {{ doctor.user.middle_name }}
+                        </h3>
+                        <div class="text-primary font-medium mb-2">
+                            <span v-for="spec in doctor.specializations"
+                                  :key="spec.id"
+                                  class="mr-2">
+                                {{ spec.name }}
+                            </span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">
+                            Стаж работы: {{ doctor.years_of_experience }} лет
+                        </p>
+                        <Link
+                            :href="route('home') + `#appointment?doctor=${doctor.id}`"
+                            class="text-primary font-medium hover:underline text-sm flex items-center">
                             Записаться на прием
                             <i class="ri-arrow-right-line ml-1"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition overflow-hidden">
-                    <img src="#" alt="[Фото доктора Петровой]" class="w-full h-64 object-cover object-top">
-                    <div class="p-4">
-                        <h3 class="text-lg font-semibold text-gray-800">Петрова Анна Михайловна</h3>
-                        <p class="text-primary font-medium mb-2">Невролог</p>
-                        <p class="text-gray-600 text-sm mb-3">Доктор медицинских наук, стаж работы 12 лет</p>
-                        <a href="#" class="text-primary font-medium hover:underline text-sm flex items-center">
-                            Записаться на прием
+                        </Link>
+
+                        <Link
+                            :href="route('doctors.show',doctor.id)"
+                            class="text-primary font-medium hover:underline text-sm flex items-center">
+                            Подробнее
                             <i class="ri-arrow-right-line ml-1"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition overflow-hidden">
-                    <img src="#" alt="[Фото доктора Смирнова]" class="w-full h-64 object-cover object-top">
-                    <div class="p-4">
-                        <h3 class="text-lg font-semibold text-gray-800">Смирнов Алексей Владимирович</h3>
-                        <p class="text-primary font-medium mb-2">Гастроэнтеролог</p>
-                        <p class="text-gray-600 text-sm mb-3">Кандидат медицинских наук, стаж работы 20 лет</p>
-                        <a href="#" class="text-primary font-medium hover:underline text-sm flex items-center">
-                            Записаться на прием
-                            <i class="ri-arrow-right-line ml-1"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition overflow-hidden">
-                    <img src="#" alt="[Фото доктора Козловой]" class="w-full h-64 object-cover object-top">
-                    <div class="p-4">
-                        <h3 class="text-lg font-semibold text-gray-800">Козлова Елена Дмитриевна</h3>
-                        <p class="text-primary font-medium mb-2">Эндокринолог</p>
-                        <p class="text-gray-600 text-sm mb-3">Кандидат медицинских наук, стаж работы 18 лет</p>
-                        <a href="#" class="text-primary font-medium hover:underline text-sm flex items-center">
-                            Записаться на прием
-                            <i class="ri-arrow-right-line ml-1"></i>
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </div>
             <div class="mt-10 text-center">
-                <a href="#" class="bg-primary text-white px-6 py-3 !rounded-button font-medium hover:bg-blue-600 transition inline-block whitespace-nowrap">Все специалисты</a>
+                <Link :href="route('doctors')"
+                      class="bg-primary text-white px-6 py-3 rounded-button font-medium hover:bg-blue-600 transition inline-block whitespace-nowrap">
+                    Все специалисты
+                </Link>
             </div>
         </div>
     </section>
 </template>
 
 <script setup lang="ts">
+import { Link } from '@inertiajs/vue3'
 
+defineProps({
+    doctors: {
+        type: Array,
+        required: true,
+        default: () => []
+    }
+})
 </script>
-
-<style scoped>
-
-</style>

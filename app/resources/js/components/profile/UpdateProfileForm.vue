@@ -6,7 +6,6 @@
         </header>
 
         <form @submit.prevent="submit" class="profile-form">
-            <!-- Составные части имени -->
             <div class="form-group">
                 <label>Полное имя</label>
                 <div class="name-fields">
@@ -29,7 +28,6 @@
                 </div>
             </div>
 
-            <!-- Email -->
             <div class="form-group">
                 <div class="flex justify-between items-center">
                     <label>Email</label>
@@ -45,7 +43,6 @@
                 </div>
             </div>
 
-            <!-- Телефон -->
             <div class="form-group">
                 <label>Телефон</label>
                 <div class="phone-input">
