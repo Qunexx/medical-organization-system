@@ -2,9 +2,12 @@
 
 declare(strict_types=1);
 
+use App\Models\Appointment;
 use App\Models\Feedback;
 use App\Models\Service;
-use app\Models\Specialization;
+use App\Models\Specialization;
+use App\Orchid\Screens\Appointment\AppointmentListScreen;
+use App\Orchid\Screens\Appointment\AppointmentViewScreen;
 use App\Orchid\Screens\Feedback\FeedbackListScreen;
 use App\Orchid\Screens\Feedback\FeedbackViewScreen;
 use App\Orchid\Screens\PlatformScreen;
@@ -17,8 +20,10 @@ use App\Orchid\Screens\User\Admin\AdminEditScreen;
 use App\Orchid\Screens\User\Admin\AdminListScreen;
 use App\Orchid\Screens\User\Doctor\DoctorEditScreen;
 use App\Orchid\Screens\User\Doctor\DoctorListScreen;
+use App\Orchid\Screens\User\Doctor\DoctorViewScreen;
 use App\Orchid\Screens\User\Patient\PatientEditScreen;
 use App\Orchid\Screens\User\Patient\PatientListScreen;
+use App\Orchid\Screens\User\Patient\PatientViewScreen;
 use App\Orchid\Screens\User\UserEditScreen;
 use App\Orchid\Screens\User\UserListScreen;
 use App\Orchid\Screens\User\UserProfileScreen;
@@ -89,19 +94,19 @@ Route::middleware(\App\Http\Middleware\RoleMiddleware::class.':admin')->group(fu
             ->parent('platform.index')
             ->push('Администраторы', route('platform.admin')));
 
-    // Platform > System > Patients > Edit
+    // Platform > System > Patients > View
     Route::screen('patients/{user}/edit', PatientEditScreen::class)
-        ->name('platform.admin.edit')
+        ->name('platform.patient.view')
         ->breadcrumbs(fn(Trail $trail, $user) => $trail
             ->parent('platform.patient')
             ->push($user->first_name, route('platform.admin.edit', $user)));
 
-// Platform > System > Patients  > Create
-    Route::screen('patients/create', PatientEditScreen::class)
-        ->name('platform.patient.create')
-        ->breadcrumbs(fn(Trail $trail) => $trail
-            ->parent('platform.systems.patient')
-            ->push(__('Create'), route('platform.patient.create')));
+    // Platform > System > Patients > View
+    Route::screen('patients/{user}/view', PatientViewScreen::class)
+        ->name('platform.patient.view')
+        ->breadcrumbs(fn(Trail $trail, $user) => $trail
+            ->parent('platform.patient')
+            ->push($user->first_name, route('platform.patient.view', $user)));
 
 // Platform > System > Patients
     Route::screen('patients', PatientListScreen::class)
@@ -130,6 +135,14 @@ Route::middleware(\App\Http\Middleware\RoleMiddleware::class.':admin')->group(fu
         ->breadcrumbs(fn(Trail $trail) => $trail
             ->parent('platform.index')
             ->push('Врачи', route('platform.doctor')));
+
+
+// Platform > System > Doctors > View
+    Route::screen('doctors/{user}/view', DoctorViewScreen::class)
+        ->name('platform.doctor.view')
+        ->breadcrumbs(fn(Trail $trail, $user) => $trail
+            ->parent('platform.doctor')
+            ->push($user->first_name, route('platform.doctor.view', $user)));
 
 // Platform > System > Roles > Role
     Route::screen('roles/{role}/edit', RoleEditScreen::class)
@@ -217,6 +230,22 @@ Route::middleware(\App\Http\Middleware\RoleMiddleware::class.':admin')->group(fu
             return $trail
                 ->parent('platform.specialization')
                 ->push($specialization->id, route('platform.specialization.edit', $specialization));
+        });
+
+    // Platform > System > Consultation
+    Route::screen('appointment', AppointmentListScreen::class)
+        ->name('platform.appointment')
+        ->breadcrumbs(fn(Trail $trail) => $trail
+            ->parent('platform.index')
+            ->push('Записи на консультации', route('platform.appointment')));
+
+    // Platform > System > Consultation > View
+    Route::screen('appointment/{appointment}', AppointmentViewScreen::class)
+        ->name('platform.appointment.view')
+        ->breadcrumbs(function (Trail $trail, Appointment $appointment) {
+            return $trail
+                ->parent('platform.appointment')
+                ->push("Консультация #{$appointment->id}", route('platform.appointment.view', $appointment));
         });
 
 });

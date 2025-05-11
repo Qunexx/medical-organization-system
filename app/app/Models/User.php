@@ -124,4 +124,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Appointment::class);
     }
+
+    public function getFullNameAttribute(): string
+    {
+        return trim("{$this->last_name} {$this->first_name} {$this->middle_name}");
+    }
 }

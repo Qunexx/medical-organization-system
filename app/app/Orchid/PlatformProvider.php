@@ -35,10 +35,10 @@ class PlatformProvider extends OrchidServiceProvider
     {
         return [
 
-//            Menu::make('Активные записи')
-//                ->icon('bs.bar-chart')
-//                ->route('platform.example.charts')
-//                ->title(__('Записи')),
+            Menu::make('Записи на консультации')
+                ->icon('bs.bar-chart')
+                ->route('platform.appointment')
+                ->title(__('Записи')),
 //
 //            Menu::make('Завершённые записи')
 //                ->icon('bs.bar-chart')

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Orchid\Layouts\User\Doctor;
+namespace App\Orchid\Layouts\User\Patient;
 
 use App\Models\User;
 use Orchid\Screen\Actions\Button;
@@ -15,7 +15,7 @@ use Orchid\Screen\Layouts\Persona;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
 
-class DoctorListLayout extends Table
+class PatientListLayout extends Table
 {
     /**
      * @var string
@@ -28,7 +28,7 @@ class DoctorListLayout extends Table
     public function columns(): array
     {
         return [
-            TD::make('first_name', __('Name'))
+            TD::make('fullName', __('ФИО'))
                 ->sort()
                 ->cantHide()
                 ->filter(Input::make())
@@ -37,14 +37,7 @@ class DoctorListLayout extends Table
             TD::make('email', __('Email'))
                 ->sort()
                 ->cantHide()
-                ->filter(Input::make())
-                ->render(fn (User $user) => ModalToggle::make($user->email)
-                    ->modal('editUserModal')
-                    ->modalTitle($user->presenter()->title())
-                    ->method('saveUser')
-                    ->asyncParameters([
-                        'user' => $user->id,
-                    ])),
+                ->filter(Input::make()),
 
             TD::make('created_at', __('Created'))
                 ->usingComponent(DateTimeSplit::class)
@@ -63,21 +56,9 @@ class DoctorListLayout extends Table
                 ->render(fn (User $user) => DropDown::make()
                     ->icon('bs.three-dots-vertical')
                     ->list([
-
-                        Link::make(__('Edit'))
-                            ->route('platform.doctor.edit', $user->doctor)
-                            ->icon('bs.pencil'),
-
-                        Button::make(__('Delete'))
-                            ->icon('bs.trash3')
-                            ->confirm(__('Once the account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.'))
-                            ->method('remove', [
-                                'id' => $user->doctor->id,
-                            ]),
-
-                        Link::make('Детали')
-                            ->icon('bs.eye')
-                            ->route('platform.doctor.view', $user)
+                        Link::make(__('Детали'))
+                            ->route('platform.patient.view', $user->id)
+                            ->icon('bs.eye'),
                     ])),
         ];
     }
