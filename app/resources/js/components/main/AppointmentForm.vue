@@ -54,34 +54,37 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="block text-gray-700 mb-2">Дата</label>
+                            <label class="block text-gray-700 mb-2">Желаемая дата</label>
                             <input
                                 type="date"
                                 v-model="appointmentForm.date"
                                 class="w-full p-3 border border-gray-300 rounded text-gray-700"
+                                required
+                                :disabled="!isAuthenticated"
                             >
                         </div>
 
                         <div class="mb-4">
-                            <label class="block text-gray-700 mb-2">Доступное время</label>
-                            <div class="grid grid-cols-3 gap-2">
+                            <label class="block text-gray-700 mb-2">Желаемое время</label>
+                            <div class="grid grid-cols-4 gap-2">
                                 <button
-                                    v-for="timeSlot in availableTimes"
-                                    :key="timeSlot"
+                                    v-for="time in timeSlots"
+                                    :key="time"
                                     type="button"
-                                    @click="selectTime(timeSlot)"
+                                    @click="selectTime(time)"
                                     :class="[
-                    'p-2 border rounded whitespace-nowrap transition-colors',
-                    appointmentForm.time === timeSlot
-                      ? 'bg-blue-50 border-primary text-primary'
-                      : 'border-gray-300 text-gray-700 hover:bg-blue-50 hover:border-primary',
-                    !isAuthenticated ? 'cursor-not-allowed opacity-75' : ''
-                  ]"
-                                    :disabled="!isAuthenticated"
+                'py-2 text-sm rounded border transition-colors',
+                appointmentForm.time === time
+                    ? 'bg-primary text-white border-primary'
+                    : 'bg-white border-gray-300 hover:border-primary',
+                isTimeDisabled(time) ? 'opacity-50 cursor-not-allowed' : ''
+            ]"
+                                    :disabled="isTimeDisabled(time)"
                                 >
-                                    {{ timeSlot }}
+                                    {{ time }}
                                 </button>
                             </div>
+                            <p class="text-sm text-gray-500 mt-1">Доступное время с 09:00 до 18:00</p>
                         </div>
                     </div>
 
@@ -204,7 +207,7 @@ const page = usePage();
 const isAuthenticated = ref(false);
 const doctors = ref<Array<any>>([]);
 const selectedDoctorFromURL = ref('');
-
+const specializations = ref('');
 interface AppointmentForm {
     specialty: string;
     doctor: string;
@@ -319,10 +322,6 @@ watch(() => appointmentForm.specialty, (newVal, oldVal) => {
         appointmentForm.doctor = '';
     }
 });
-
-
-const availableTimes = ref(['09:00', '09:30', '10:00', '10:30', '11:00', '11:30']);
-
 const selectTime = (time: string) => {
     if (isAuthenticated.value) {
         appointmentForm.time = time;
@@ -405,26 +404,58 @@ const handleAppointmentSubmit = () => {
         return;
     }
 
-    // router.post(route(), {
-    //     ...appointmentForm,
-    //     onSuccess: () => {
-    //         showNotification('Вы успешно записаны на прием!', 'success');
-    //         Object.assign(appointmentForm, {
-    //             specialty: '',
-    //             doctor: '',
-    //             date: '',
-    //             time: '',
-    //             comment: '',
-    //             consent: false,
-    //         });
-    //     },
-    //     onError: (errors) => {
-    //         showNotification(
-    //             Object.values(errors).join(', ') || 'Ошибка при записи!',
-    //             'error'
-    //         );
-    //     }
-    // });
+        router.post(route('appointment.make'), {
+            doctor_id: appointmentForm.doctor,
+            date: appointmentForm.date,
+            specialty: appointmentForm.specialty,
+            time: appointmentForm.time,
+            name: appointmentForm.name,
+            phone: appointmentForm.phone.replace(/\D/g, ''),
+            email: appointmentForm.email,
+            comment: appointmentForm.comment,
+        }, {
+            onSuccess: () => {
+                showNotification('Вы успешно записаны на прием!', 'success');
+                Object.assign(appointmentForm, {
+                    specialty: '',
+                    doctor: '',
+                    date: '',
+                    time: '',
+                    comment: '',
+                    consent: false,
+                });
+            },
+            onError: (errors) => {
+                const message = Object.values(errors).join('\n') || 'Ошибка при записи!';
+                showNotification(message, 'error');
+            }
+        });
+};
+
+const timeSlots = ref<string[]>([]);
+for (let hour = 9; hour <= 18; hour++) {
+    for (let minute = 0; minute < 60; minute += 30) {
+        if (hour === 18 && minute > 0) break;
+        timeSlots.value.push(
+            `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
+        );
+    }
+}
+
+const isTimeDisabled = (time: string) => {
+    if (!appointmentForm.date) return true;
+
+    const selectedDate = new Date(appointmentForm.date);
+    const now = new Date();
+    if (selectedDate.toDateString() === now.toDateString()) {
+        const [hours, minutes] = time.split(':').map(Number);
+        const selectedTime = new Date();
+        selectedTime.setHours(hours, minutes, 0, 0);
+
+        return selectedTime < now;
+    }
+
+    return false;
 };
 </script>
 

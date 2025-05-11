@@ -9,6 +9,7 @@ defineProps<{
 const form = useForm({
     name: '',
     email: '',
+    phone: '',
     password: '',
     password_confirmation: '',
 });
@@ -27,6 +28,38 @@ const submit = () => {
         },
     });
 };
+
+const formatPhoneNumber = (event) => {
+    let phone = event.target.value.replace(/\D/g, '');
+    let formatted = '';
+
+    if (phone.length > 0) {
+        formatted = '+7 ';
+        if (phone.length > 1) {
+            phone = phone.substring(1);
+        }
+    }
+
+    if (phone.length > 0) {
+        formatted += '(' + phone.substring(0, 3);
+    }
+    if (phone.length >= 4) {
+        formatted += ') ' + phone.substring(3, 6);
+    }
+    if (phone.length >= 7) {
+        formatted += '-' + phone.substring(6, 8);
+    }
+    if (phone.length >= 9) {
+        formatted += '-' + phone.substring(8, 10);
+    }
+
+    if (phone.length > 10) {
+        phone = phone.substring(0, 10);
+    }
+
+    this.form.phone = formatted;
+    event.target.value = formatted;
+}
 
 const handleGoToHome = () => {
     router.visit(route('home'));
@@ -70,6 +103,23 @@ const handleGoToHome = () => {
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         />
                         <p v-if="form.errors.name" class="text-red-500 text-xs italic">{{ form.errors.name }}</p>
+                    </div>
+
+                    <div class="grid gap-2">
+                        <label for="phone" class="text-gray-700 text-sm font-bold block mb-2">Номер телефона</label>
+                        <input
+                            id="phone"
+                            type="tel"
+                            required
+                            tabindex="1"
+                            autocomplete="tel"
+                            v-model="form.phone"
+                            @input="formatPhoneNumber"
+                            placeholder="+7 (999) 999-99-99"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            :class="{ 'border-red-500': form.errors.phone }"
+                        />
+                        <p v-if="form.errors.phone" class="text-red-500 text-xs italic">{{ form.errors.phone }}</p>
                     </div>
 
                     <div class="grid gap-2">

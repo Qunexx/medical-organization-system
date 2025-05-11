@@ -19,6 +19,8 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('consultation')->group(function () {
             Route::get('/', [\App\Http\Controllers\ConsultationController::class, 'myConsultations'])->name('patient.myConsultation');
         });
+
+        Route::post('/make-appointment', [\App\Http\Controllers\ConsultationController::class, 'makeAppointment'])->name('appointment.make');
 //
 //
 //        Route::prefix('chat')->group(function () {

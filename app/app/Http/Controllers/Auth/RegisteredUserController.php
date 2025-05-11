@@ -11,6 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -34,6 +35,10 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => 'required|max:255',
+            'phone' => [
+                'required',
+                Rule::unique(User::class, 'phone')->ignore($doctor->user->id ?? null)
+            ],
             'email' => 'required|string|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed','min:6','max:255'],
         ]);
@@ -41,6 +46,7 @@ class RegisteredUserController extends Controller
         $user = User::create([
             'first_name' => $request->name,
             'email' => $request->email,
+            'phone' => $request->phone,
             'password' => Hash::make($request->password),
         ]);
         $role = Role::where('slug', RoleEnum::USER->getLabel())->first();
