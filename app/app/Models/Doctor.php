@@ -21,10 +21,6 @@ class Doctor extends Model
         'description',
     ];
 
-    protected $casts = [
-        'pivot' => 'array',
-    ];
-
     /**
      * The attributes for which you can use filters in url.
      *

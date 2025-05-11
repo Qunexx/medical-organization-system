@@ -12,17 +12,19 @@
                             <div v-for="doctor in service.doctors" :key="doctor.id"
                                  class="bg-gray-50 p-6 rounded-lg hover:bg-white transition-all">
                                 <div class="flex items-start gap-4">
-                                    <img :src="doctor.photo || '/images/doctor-avatar.jpg'"
+                                    <img :src="doctor.user.avatar?.url
+                                        ? `/storage/${doctor.user.avatar.url}`
+                                        : '/storage/emptyAvatar.jpg'"
                                          class="w-24 h-24 rounded-full object-cover border-2 border-white shadow-sm"
                                          alt="Фото врача">
                                     <div class="flex-1">
                                         <h3 class="text-xl font-semibold text-gray-800">
-                                            {{ doctor.full_name }}
+                                            {{ doctor.user.last_name}} {{ doctor.user.first_name}} {{ doctor.user.middle_name || ''}}
                                         </h3>
                                         <div class="flex items-center gap-2 mb-2">
                                             <i class="ri-briefcase-line text-primary"></i>
                                             <span class="text-gray-600">
-                                                Опыт: {{ doctor.years_of_experience }} лет
+                                                Опыт: {{ doctor.years_of_experience || '' }} лет
                                             </span>
                                         </div>
                                         <div class="flex items-start gap-2">
@@ -38,7 +40,7 @@
                                                 </ul>
                                             </div>
                                         </div>
-                                        <Link :href="route('doctors.show', doctor.id)"
+                                        <Link :href="route('services.all')"
                                               class="mt-4 inline-flex items-center text-primary hover:underline">
                                             Записаться на прием
                                             <i class="ri-arrow-right-line ml-2"></i>

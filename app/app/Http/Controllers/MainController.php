@@ -51,16 +51,16 @@ class MainController extends Controller
 
     public function showService(Service $service)
     {
-        $service->load(['doctors' => function($query) {
+        $service->load(['doctors' => function ($query) {
             $query->with([
-                'user:id,first_name,last_name',
+                'user:id,first_name,last_name,middle_name',
                 'user.avatar:id,user_id,url',
                 'specializations:id,name'
             ])
                 ->select(
                     'doctors.id',
                     'doctors.user_id',
-                    'doctors.years_of_experience'
+                    'doctors.years_of_experience',
                 );
         }]);
 
