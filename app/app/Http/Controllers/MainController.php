@@ -17,7 +17,7 @@ class MainController extends Controller
     public function index(Request $request): Response
     {
         $services = Service::take(6)->get();
-        $doctors = Doctor::with(['user', 'specializations'])
+        $doctors = Doctor::with(['user.avatar', 'specializations'])
             ->when($request->doctor, function($query, $doctorId) {
                 $query->where('id', $doctorId);
             })

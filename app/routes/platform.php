@@ -95,12 +95,19 @@ Route::middleware(\App\Http\Middleware\RoleMiddleware::class.':admin')->group(fu
             ->parent('platform.index')
             ->push('Администраторы', route('platform.admin')));
 
-    // Platform > System > Patients > View
+    // Platform > System > Patients > Edit
     Route::screen('patients/{user}/edit', PatientEditScreen::class)
-        ->name('platform.patient.view')
+        ->name('platform.patient.edit')
         ->breadcrumbs(fn(Trail $trail, $user) => $trail
             ->parent('platform.patient')
-            ->push($user->first_name, route('platform.admin.edit', $user)));
+            ->push($user->first_name, route('platform.patient.edit', $user)));
+
+    // Platform > System > Patients > Edit
+    Route::screen('patients/create', PatientEditScreen::class)
+        ->name('platform.patient.create')
+        ->breadcrumbs(fn(Trail $trail, $user) => $trail
+            ->parent('platform.patient')
+            ->push('Создание', route('platform.patient.create')));
 
     // Platform > System > Patients > View
     Route::screen('patients/{user}/view', PatientViewScreen::class)
