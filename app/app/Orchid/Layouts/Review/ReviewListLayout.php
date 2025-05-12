@@ -65,8 +65,8 @@ class ReviewListLayout extends Table
                 ->render(function ($review) {
                     return Button::make('Удалить')
                         ->icon('trash')
-                        ->confirm('Вы уверены?')
-                        ->method('delete', [
+                        ->confirm('Удалённый отзыв уже нельзя будет вернуть')
+                        ->method('remove', [
                             'id' => $review->id
                         ]);
                 }),

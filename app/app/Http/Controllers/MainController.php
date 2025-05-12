@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\RoleEnum;
 use App\Models\Doctor;
 use App\Models\Feedback;
+use App\Models\Review;
 use App\Models\Role;
 use App\Models\Service;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -22,11 +23,13 @@ class MainController extends Controller
                 $query->where('id', $doctorId);
             })
             ->get();
+        $reviews = Review::with(['user.avatar'])->take(3)->get();
 
         return Inertia::render('MainPage',
         [
             'services' => $services,
             'doctors' => $doctors,
+            'reviews' => $reviews,
             'selectedDoctor' => $request->input('doctor')
         ]);
     }
@@ -103,6 +106,17 @@ class MainController extends Controller
 
         return Inertia::render('Doctor', [
             'doctor' => $doctor->makeHidden(['created_at', 'updated_at'])
+        ]);
+    }
+
+    public function reviews()
+    {
+        $reviews = Review::with(['user.avatar', 'appointment'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return Inertia::render('Reviews', [
+            'reviews' => $reviews,
         ]);
     }
 

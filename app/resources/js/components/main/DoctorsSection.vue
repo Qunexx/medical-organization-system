@@ -46,7 +46,7 @@
                 </div>
             </div>
             <div class="mt-10 text-center">
-                <Link :href="route('doctors')"
+                <Link :href="route('doctors.index')"
                       class="bg-primary text-white px-6 py-3 rounded-button font-medium hover:bg-blue-600 transition inline-block whitespace-nowrap">
                     Все специалисты
                 </Link>

@@ -40,7 +40,7 @@
                                                 </ul>
                                             </div>
                                         </div>
-                                        <Link :href="route('services.all')"
+                                        <Link :href="route('services.index')"
                                               class="mt-4 inline-flex items-center text-primary hover:underline">
                                             Записаться на прием
                                             <i class="ri-arrow-right-line ml-2"></i>
@@ -56,7 +56,7 @@
                     </div>
                 </div>
                 <div class="text-center">
-                    <Link :href="route('services.all')"
+                    <Link :href="route('services.index')"
                           class="inline-flex items-center px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition">
                         <i class="ri-arrow-left-line mr-2"></i>
                         Назад к списку услуг

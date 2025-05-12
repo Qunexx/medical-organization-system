@@ -1,4 +1,4 @@
-<!-- resources/js/Pages/Services/All.vue -->
+
 <template>
     <MainLayout>
     <section class="py-16 bg-gray-50">

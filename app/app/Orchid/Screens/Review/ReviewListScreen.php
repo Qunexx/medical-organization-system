@@ -78,8 +78,8 @@ class ReviewListScreen extends Screen
 
     public function remove(Request $request)
     {
-        $specialization = Review::findOrFail($request->input('id'));
-        $specialization->delete();
+        $review = Review::findOrFail($request->input('id'));
+        $review->delete();
         Toast::info('Отзыв успешно удален');
     }
 }

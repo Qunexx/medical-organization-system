@@ -44,11 +44,11 @@
                         </li>
                         <li class="flex items-start">
                             <i class="ri-mail-line mr-2 mt-1 shrink-0"></i>
-                            <span>info@iformsystem.qunexx.ru</span>
+                            <span>info@informsystem.qunexx.ru</span>
                         </li>
                         <li class="flex items-start">
                             <i class="ri-time-line mr-2 mt-1 shrink-0"></i>
-                            <span>Пн-Пт: 8:00 - 20:00<br>Сб: 9:00 - 18:00<br>Вс: выходной</span>
+                            <span>Пн-Сб: 8:00 - 18:00<br>Вс: выходной</span>
                         </li>
                     </ul>
                 </div>
