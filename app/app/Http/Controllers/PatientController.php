@@ -196,23 +196,4 @@ class PatientController extends Controller
             'status' => session('status')
         ]);
     }
-
-    public function myAppointments(Request $request): Response
-    {
-        $user = auth()->user();
-
-        return Inertia::render('patient/Profile', [
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'avatar_url' => $user->avatar_url,
-            ],
-            'settings' => [
-                'access_email_notify' => $user->access_email_notify,
-                'access_telegram_notify' => $user->access_telegram_notify
-            ],
-            'status' => session('status')
-        ]);
-    }
 }

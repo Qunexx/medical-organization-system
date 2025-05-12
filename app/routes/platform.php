@@ -11,6 +11,7 @@ use App\Orchid\Screens\Appointment\AppointmentViewScreen;
 use App\Orchid\Screens\Feedback\FeedbackListScreen;
 use App\Orchid\Screens\Feedback\FeedbackViewScreen;
 use App\Orchid\Screens\PlatformScreen;
+use App\Orchid\Screens\Review\ReviewListScreen;
 use App\Orchid\Screens\Role\RoleEditScreen;
 use App\Orchid\Screens\Service\ServiceEditScreen;
 use App\Orchid\Screens\Service\ServiceListScreen;
@@ -265,4 +266,10 @@ Route::middleware(\App\Http\Middleware\RoleMiddleware::class.':admin')->group(fu
                 ->push('Статистика');
         });
 
+    // Platform > System > Review
+    Route::screen('review', ReviewListScreen::class)
+        ->name('platform.review')
+        ->breadcrumbs(fn(Trail $trail) => $trail
+            ->parent('platform.index')
+            ->push('Отзывы', route('platform.review')));
 });

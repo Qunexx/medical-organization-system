@@ -46,6 +46,11 @@ class Appointment extends Model
         return $this->belongsTo(Specialization::class);
     }
 
+    public function review()
+    {
+        return $this->hasOne(Review::class);
+    }
+
     public static function validateTimeSlot($request, $value, $fail)
     {
         $date = Carbon::parse($request->date);

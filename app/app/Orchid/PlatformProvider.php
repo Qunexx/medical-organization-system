@@ -39,6 +39,11 @@ class PlatformProvider extends OrchidServiceProvider
                 ->route('platform.appointment')
                 ->title(__('Записи')),
 
+            Menu::make('Отзывы')
+                ->icon('bs.chat-text')
+                ->route('platform.review')
+                ->divider(),
+
             Menu::make(__('Услуги'))
                 ->icon('bs.gear')
                 ->title(__('Система'))

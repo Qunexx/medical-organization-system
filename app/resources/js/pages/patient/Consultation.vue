@@ -80,6 +80,48 @@
                             </div>
                         </div>
 
+                        <div class="border-t pt-4" v-if="appointment.status === 5">
+                            <div v-if="!appointment.review" class="space-y-4">
+                            <h3 class="text-lg font-medium mb-4">Оставить отзыв</h3>
+
+                                <form @submit.prevent="submitReview">
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Комментарий:</label>
+                                        <textarea
+                                            v-model="form.comment"
+                                            rows="4"
+                                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                            placeholder="Опишите ваши впечатления о приеме..."
+                                            required
+                                        ></textarea>
+                                    </div>
+
+                                    <div class="flex gap-4">
+                                        <button
+                                            type="submit"
+                                            class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition"
+                                            :disabled="form.processing"
+                                        >
+                                            Отправить отзыв
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            @click="cancelReview"
+                                            class="inline-flex items-center px-4 py-2 bg-gray-100 border border-transparent rounded-md font-semibold text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition"
+                                        >
+                                            Отмена
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div v-else class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium mb-2">Ваш отзыв:</h4>
+                                <p class="whitespace-pre-wrap">{{ appointment.review.text }}</p>
+                            </div>
+                        </div>
+
                         <div class="border-t pt-6 flex justify-between items-center">
                             <Link
                                 :href="route('patient.myConsultation')"
@@ -105,7 +147,7 @@
 
 <script setup lang="ts">
 import ProfileLayout from '../../layouts/ProfileLayout.vue';
-import {Link, router} from '@inertiajs/vue3';
+import {Link, router, useForm} from '@inertiajs/vue3';
 
 const props = defineProps({
     appointment: Object
@@ -143,8 +185,30 @@ const canCancel = (appointment: any) => {
 
 const cancelAppointment = (appointment: any) => {
     if (confirm('Вы уверены, что хотите отменить эту запись?')) {
-        router.delete(route('patient.appointment.delete', appointment.id));
+        router.post(route('patient.appointment.delete', appointment.id));
     }
+};
+
+const form = useForm({
+    comment: '',
+    appointment_id: props.appointment.id,
+});
+
+const submitReview = () => {
+    form.post(route('patient.appointment.review', props.appointment.id), {
+        preserveScroll: true,
+        onSuccess: () => {
+            form.reset();
+            router.reload({ only: ['appointment'] });
+        },
+        onError: (errors) => {
+            console.error('Ошибка отправки отзыва:', errors);
+        }
+    });
+};
+
+const cancelReview = () => {
+    form.reset();
 };
 </script>
 

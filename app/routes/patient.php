@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\PatientController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -17,10 +18,12 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/change-password', [PatientController::class, 'changePassword'])->name('patient.changePassword');
 
         Route::prefix('consultation')->group(function () {
-            Route::get('/', [\App\Http\Controllers\ConsultationController::class, 'myConsultations'])->name('patient.myConsultation');
-            Route::post('/make-appointment', [\App\Http\Controllers\ConsultationController::class, 'makeAppointment'])->name('patient.appointment.make');
-            Route::get('/{appointment}', [\App\Http\Controllers\ConsultationController::class, 'show'])->name('patient.appointment.view');
-            Route::post('/{appointment}', [\App\Http\Controllers\ConsultationController::class, 'destroy'])->name('patient.appointment.delete');
+            Route::get('/', [ConsultationController::class, 'myConsultations'])->name('patient.myConsultation');
+            Route::post('/make-appointment', [ConsultationController::class, 'makeAppointment'])->name('patient.appointment.make');
+            Route::get('/{appointment}', [ConsultationController::class, 'show'])->name('patient.appointment.view');
+            Route::post('/{appointment}', [ConsultationController::class, 'destroy'])->name('patient.appointment.delete');
+            Route::post('/appointments/{appointment}/review', [ConsultationController::class, 'createReview'])
+                ->name('patient.appointment.review');
         });
 
     });
