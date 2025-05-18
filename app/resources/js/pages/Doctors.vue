@@ -10,6 +10,7 @@
                 <div class="grid md:grid-cols-4 gap-6">
                     <div v-for="doctor in doctors.data" :key="doctor.id"
                          class="bg-white rounded-lg shadow-sm hover:shadow-md transition overflow-hidden">
+                        <Link    :href="route('doctors.show',doctor.id)">
                         <img :src="doctor.user.avatar?.url
                                         ? `/storage/${doctor.user.avatar.url}`
                                         : '/storage/emptyAvatar.jpg'"
@@ -49,6 +50,7 @@
                                 <i class="ri-arrow-right-line ml-1"></i>
                             </Link>
                         </div>
+                        </Link>
                     </div>
                 </div>
 

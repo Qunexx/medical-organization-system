@@ -8,6 +8,9 @@
             <div class="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
                 <div v-for="doctor in doctors.slice(0, 6)" :key="doctor.id"
                      class="bg-white rounded-lg shadow-sm hover:shadow-md transition overflow-hidden">
+                    <Link
+                        :href="route('doctors.show',doctor.id)">
+
                     <img :src="doctor.user.avatar?.url
                              ? `/storage/${doctor.user.avatar.url}`
                              : '/storage/emptyAvatar.jpg'"
@@ -29,6 +32,7 @@
                         <p class="text-gray-600 text-sm mb-3">
                             Стаж работы: {{ doctor.years_of_experience }} лет
                         </p>
+
                         <Link
                             :href="route('home') + `#appointment`"
                             class="text-primary font-medium hover:underline text-sm flex items-center">
@@ -43,6 +47,7 @@
                             <i class="ri-arrow-right-line ml-1"></i>
                         </Link>
                     </div>
+                    </Link>
                 </div>
             </div>
             <div class="mt-10 text-center">

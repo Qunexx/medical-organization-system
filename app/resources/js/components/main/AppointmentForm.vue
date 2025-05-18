@@ -1,12 +1,36 @@
 <template>
     <section id="appointment" class="py-16 bg-gray-50">
+
         <div class="container mx-auto px-4">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold text-gray-800 mb-4">Запись на прием</h2>
                 <p class="text-gray-600 max-w-3xl mx-auto">Выберите специалиста, удобную дату и время для вашего визита</p>
             </div>
+            <div v-if="!isAuthenticated" class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-8">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <Link  :href="route('register')">
+                        <p class="text-sm text-yellow-700">
+                            Для записи на прием необходимо войти или зарегистрироваться
+                        </p>
+                        </Link>
+                    </div>
 
-            <form @submit.prevent="handleAppointmentSubmit" class="bg-white rounded-lg shadow-md p-6 md:p-8 max-w-4xl mx-auto">
+                </div>
+            </div>
+
+            <form
+                @submit.prevent="handleAppointmentSubmit"
+                :class="[
+        'bg-white rounded-lg shadow-md p-6 md:p-8 max-w-4xl mx-auto',
+        !isAuthenticated && 'opacity-75'
+    ]"
+            >
                 <div class="grid md:grid-cols-2 gap-8">
                     <div>
                         <h3 class="text-xl font-semibold text-gray-800 mb-4">Выберите специалиста и время</h3>
@@ -14,6 +38,14 @@
                         <div class="mb-4">
                             <label for="specialty" class="block text-gray-700 mb-2">Специальность</label>
                             <div class="relative">
+                                <div
+                                    v-if="!isAuthenticated"
+                                    class="absolute inset-0 bg-white/80 z-10 flex items-center justify-center"
+                                >
+                                    <p class="text-lg font-medium text-gray-600">
+                                        Авторизуйтесь для записи
+                                    </p>
+                                </div>
                                 <select
                                     id="specialty"
                                     v-model="appointmentForm.specialty"
@@ -37,6 +69,7 @@
                                 <select
                                     id="doctor"
                                     v-model="appointmentForm.doctor"
+                                    :disabled="!isAuthenticated"
                                     class="w-full p-3 border border-gray-300 rounded text-gray-700 bg-white appearance-none pr-8"
                                 >
                                     <option value="">Выберите врача</option>
@@ -200,7 +233,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, computed, watch } from 'vue';
-import { usePage, router } from '@inertiajs/vue3';
+import {usePage, router, Link} from '@inertiajs/vue3';
 
 
 const page = usePage();

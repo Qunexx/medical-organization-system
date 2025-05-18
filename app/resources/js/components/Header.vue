@@ -5,14 +5,14 @@
                 <Link :href="route('home')" class="text-2xl font-['Pacifico'] text-primary hover:text-primary/80 transition-colors">
                     МедИнформСистем
                 </Link>
-                <nav class="hidden md:flex ml-10 space-x-8">
-                    <Link  :href="route('home') + '#about'" class="text-gray-700 hover:text-primary font-medium transition-colors">
+                <nav class="hidden md:flex ml-10 space-x-8 pointer-events-auto">
+                    <Link  :href="route('home') + '#about'" class="text-gray-700 hover:text-primary font-medium ">
                         О нас
                     </Link>
-                    <Link :href="route('home') + '#services'" class="text-gray-700 hover:text-primary font-medium transition-colors">
+                    <Link :href="route('home') + '#services'" class="text-gray-700 hover:text-primary font-medium ">
                         Услуги
                     </Link>
-                    <Link :href="route('home') + '#doctors'" class="text-gray-700 hover:text-primary font-medium transition-colors">
+                    <Link :href="route('home') + '#doctors'" class="text-gray-700 hover:text-primary font-medium ">
                         Врачи
                     </Link>
                 </nav>
@@ -91,7 +91,7 @@ function logout() {
 }
 </script>
 
-<style scoped>
+<style>
 .font-\[\'Pacifico\'\] {
     font-family: 'Pacifico', cursive;
 }
@@ -104,4 +104,11 @@ a:hover {
 button:hover {
     text-decoration: none;
 }
+ .container {
+     max-width: 100%
+ }
+ @media (min-width: 1280px) {
+     .container { max-width: 1280px }
+ }
+
 </style>

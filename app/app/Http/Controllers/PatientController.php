@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AdditionalProfileUpdateRequest;
+use App\Http\Requests\AvatarUpdateRequest;
+use App\Http\Requests\ChangePasswordRequest;
+use App\Http\Requests\MainProfileUpdateRequest;
+use App\Http\Requests\NotificationChangeRequest;
 use App\Models\Avatar;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -44,12 +49,9 @@ class PatientController extends Controller
         ]);
     }
 
-    public function avatarUpdate(Request $request)
+    public function avatarUpdate(AvatarUpdateRequest $request)
     {
-        $validated = $request->validate([
-            'avatar' => 'required|image|max:2048',
-        ]);
-
+        $validated = $request->validated();
         $user = $request->user();
 
         try {
@@ -72,48 +74,29 @@ class PatientController extends Controller
         }
     }
 
-    public function mainProfileUpdate(Request $request)
+    public function mainProfileUpdate(MainProfileUpdateRequest $request)
     {
-        $validated = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'middle_name' => 'string|max:255',
-            'email' => ['required', 'email', Rule::unique('users')->ignore(auth()->id())],
-            'phone' => ['required', 'string', 'regex:/^\+7\d{10}$/']
-        ], [
-            'phone.regex' => 'Номер телефона должен быть в формате +7XXXXXXXXXX'
-        ]);
+        $validated = $request->validated();
 
         auth()->user()->update($validated);
 
         return back()->with('success', 'Профиль успешно обновлён');
     }
 
-    public function additionalProfileUpdate(Request $request)
+    public function additionalProfileUpdate(AdditionalProfileUpdateRequest $request)
     {
         $user = auth()->user();
 
-        $validated = $request->validate([
-            'birthday' => 'nullable|date',
-            'telegram_account' => [
-                'nullable',
-                'string',
-                'max:255',
-                Rule::unique('users')->ignore($user->id)
-            ]
-        ]);
+        $validated = $request->validated();
 
         $user->update($validated);
 
         return redirect()->back()->with('success', 'Данные успешно обновлены');
     }
 
-    public function notificationChange(Request $request)
+    public function notificationChange(NotificationChangeRequest $request)
     {
-        $request->validate([
-            'access_email_notify' => 'boolean',
-            'access_telegram_notify' => 'boolean',
-        ]);
+        $request->validated();
 
         $user = Auth::user();
 
@@ -144,26 +127,11 @@ class PatientController extends Controller
         ]);
     }
 
-    public function changePassword(Request $request)
+    public function changePassword(ChangePasswordRequest $request)
     {
         $user = auth()->user();
 
-        $validated = $request->validate([
-            'current_password' => [
-                'required',
-                function ($attribute, $value, $fail) use ($user) {
-                    if (!Hash::check($value, $user->password)) {
-                        $fail('Текущий пароль введен неверно');
-                    }
-                },
-            ],
-            'password' => [
-                'nullable',
-                'confirmed',
-                Password::min(8),
-            ],
-            'password_confirmation' => 'required_with:password|min:8',
-        ]);
+        $validated =$request->validated();
 
         if ($request->filled('password')) {
             $user->update([

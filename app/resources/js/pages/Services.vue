@@ -9,11 +9,13 @@
 
             <div class="grid md:grid-cols-3 gap-6">
                 <div v-for="service in services.data" :key="service.id" class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition">
+                    <Link :href="route('services.show', service.id)">
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ service.name }}</h3>
                     <p class="text-gray-600 mb-4">{{ service.description }}</p>
                     <Link :href="route('services.show', service.id)" class="text-primary font-medium hover:underline flex items-center">
                         Подробнее
                         <i class="ri-arrow-right-line ml-1"></i>
+                    </Link>
                     </Link>
                 </div>
             </div>

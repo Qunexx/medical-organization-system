@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\RoleEnum;
+use App\Http\Requests\SendFeedbackRequest;
 use App\Models\Doctor;
 use App\Models\Feedback;
 use App\Models\Review;
@@ -34,14 +35,9 @@ class MainController extends Controller
         ]);
     }
 
-    public function sendFeedBack(Request $request)
+    public function sendFeedBack(SendFeedbackRequest $request)
     {
-        $validated = $request->validate([
-            'fio' => 'required|string|max:255',
-            'email' => 'required|email',
-            'subject' => 'nullable|string|max:255',
-            'message' => 'required|string|max:2000'
-        ]);
+        $validated = $request->validated();
 
         Feedback::create([
             'fio' => $validated['fio'] ?? null,

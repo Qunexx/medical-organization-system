@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use app\Enums\ConsultationStatusesEnum;
+use App\Http\Requests\MakeAppointmentRequest;
 use App\Models\Appointment;
 use App\Models\Review;
 use App\Models\Specialization;
@@ -28,28 +29,9 @@ class ConsultationController extends Controller
         ]);
     }
 
-    public function makeAppointment(Request $request)
+    public function makeAppointment(MakeAppointmentRequest $request)
     {
-        $validated = $request->validate([
-            'doctor_id' => 'required|exists:doctors,id',
-            'date' => [
-                'required',
-                'date',
-                'after_or_equal:today'
-            ],
-            'time' => [
-                'required',
-                'date_format:H:i',
-                function ($attribute, $value, $fail) use ($request) {
-                    Appointment::validateTimeSlot($request, $value, $fail);
-                },
-            ],
-            'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
-            'specialty' => 'required|string',
-            'email' => 'required|email|max:255',
-            'comment' => 'nullable|string|max:500',
-        ]);
+        $validated = $request->validated();
 
         $specialization = Specialization::where('name','like', $validated['specialty'])->firstOrFail();
         $appointment = Appointment::create([
