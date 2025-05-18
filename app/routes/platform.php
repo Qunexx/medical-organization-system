@@ -116,12 +116,6 @@ Route::middleware(\App\Http\Middleware\RoleMiddleware::class.':admin,doctor,supp
                 ->parent('platform.patient')
                 ->push('Создание', route('platform.patient.create')));
 
-        Route::screen('doctors/{doctor}/edit', DoctorEditScreen::class)
-            ->name('platform.doctor.edit')
-            ->breadcrumbs(fn(Trail $trail, $doctor) => $trail
-                ->parent('platform.doctor')
-                ->push($doctor->user->first_name, route('platform.doctor.edit', $doctor)));
-
         Route::screen('doctors/create', DoctorEditScreen::class)
             ->name('platform.doctor.create')
             ->breadcrumbs(fn(Trail $trail) => $trail
@@ -185,6 +179,13 @@ Route::middleware(\App\Http\Middleware\RoleMiddleware::class.':admin,doctor,supp
             });
 
 
+    });
+    Route::middleware(\App\Http\Middleware\RoleMiddleware::class.':admin,doctor')->group(function () {
+        Route::screen('doctors/{doctor}/edit', DoctorEditScreen::class)
+            ->name('platform.doctor.edit')
+            ->breadcrumbs(fn(Trail $trail, $doctor) => $trail
+                ->parent('platform.doctor')
+                ->push($doctor->user->first_name, route('platform.doctor.edit', $doctor)));
     });
 
     Route::screen('review', ReviewListScreen::class)

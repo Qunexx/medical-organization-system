@@ -58,7 +58,16 @@ class DoctorViewScreen extends Screen
      */
     public function commandBar(): iterable
     {
+        $authUser = auth()->user();
+        $canEdit = false;
+        if ($authUser->id === $this->user->id && $authUser->isDoctor()){
+            $canEdit = true;
+        }
         return [
+            Link::make('Редактировать')
+                ->canSee($canEdit)
+                ->route('platform.doctor.edit', $this->user->doctor),
+
             Link::make('Назад')
                 ->icon('arrow-left')
                 ->route('platform.doctor'),

@@ -45,6 +45,11 @@ class DoctorEditScreen extends Screen
      */
     public function query(Doctor $doctor): iterable
     {
+        $authUser = auth()->user();
+        if ($authUser->isDoctor() && $authUser->doctor->id !== $doctor->id) {
+            abort(403, 'Нет доступа');
+        }
+
         if ($doctor->exists) {
             $doctor->load([
                 'specializations',

@@ -44,6 +44,10 @@ class PlatformProvider extends OrchidServiceProvider
                     ->icon('bs.person-heart')
                     ->route('platform.patient'),
 
+                Menu::make('Мой профиль')
+                    ->icon('bs.person-heart')
+                    ->route('platform.doctor.view', auth()->user()),
+
                 Menu::make('Отзывы на мои консультации')
                     ->icon('bs.chat-text')
                     ->route('platform.review')
