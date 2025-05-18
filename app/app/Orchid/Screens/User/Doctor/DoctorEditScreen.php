@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Orchid\Screens\User\Doctor;
 
 use App\Enums\RoleEnum;
+use App\Http\Requests\EditDoctorRequest;
 use App\Models\Avatar;
 use App\Models\Doctor;
 use App\Models\Role;
@@ -116,29 +117,9 @@ class DoctorEditScreen extends Screen
     /**
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function save(Request $request, Doctor $doctor)
+    public function save(EditDoctorRequest $request, Doctor $doctor)
     {
-        $request->validate([
-            'user.first_name' => 'required',
-            'user.last_name' => 'required',
-            'user.email' => [
-                'required',
-                'email',
-                Rule::unique(User::class, 'email')->ignore($doctor->user->id ?? null)
-            ],
-            'user.phone' => [
-                'required',
-                Rule::unique(User::class, 'phone')->ignore($doctor->user->id ?? null)
-            ],
-            'user.password' => [
-                Rule::requiredIf(!$doctor->exists),
-                'nullable',
-                'min:8',
-            ],
-            'doctor.years_of_experience' => 'numeric|min:0',
-            'doctor.specializations' => 'required|array',
-            'doctor.services' => 'required|array',
-        ]);
+        $request->validated();
 
         DB::transaction(function () use ($request, $doctor) {
             $user = $doctor->user ?? new User();

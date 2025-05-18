@@ -33,6 +33,54 @@ class PlatformProvider extends OrchidServiceProvider
      */
     public function menu(): array
     {
+        $user = auth()->user();
+        if ($user->isDoctor()) {
+            return [
+                Menu::make('Мои записи')
+                    ->icon('bs.calendar3')
+                    ->route('platform.appointment'),
+
+                Menu::make('Пациенты')
+                    ->icon('bs.person-heart')
+                    ->route('platform.patient'),
+
+                Menu::make('Отзывы на мои консультации')
+                    ->icon('bs.chat-text')
+                    ->route('platform.review')
+                    ->divider(),
+
+                Menu::make('Статистика')
+                    ->icon('bs.bar-chart-line')
+                    ->route('platform.stats')
+                    ->title(__('Аналитика')),
+            ];
+        }
+
+        if ($user->isSupport()) {
+            return [
+                Menu::make('Записи на консультации')
+                ->icon('bs.calendar3')
+                ->route('platform.appointment')
+                ->title(__('Записи')),
+
+                Menu::make('Отзывы')
+                    ->icon('bs.chat-text')
+                    ->route('platform.review')
+               ,
+
+                Menu::make(__('Обратная связь'))
+                    ->icon('bs.chat')
+                    ->title(__('Обратная связь'))
+                    ->route('platform.feedback')
+                    ->divider(),
+
+                Menu::make('Статистика')
+                    ->icon('bs.bar-chart-line')
+                    ->route('platform.stats')
+                    ->title(__('Аналитика')),
+            ];
+        }
+
         return [
             Menu::make('Записи на консультации')
                 ->icon('bs.calendar3')
@@ -72,6 +120,10 @@ class PlatformProvider extends OrchidServiceProvider
             Menu::make('Врачи')
                 ->icon('bs.person-badge')
                 ->route('platform.doctor'),
+
+            Menu::make('Поддержка')
+                ->icon('bs.person-gear')
+                ->route('platform.support'),
 
             Menu::make('Администраторы')
                 ->icon('bs.shield-check')

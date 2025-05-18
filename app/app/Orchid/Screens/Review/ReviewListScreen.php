@@ -27,8 +27,18 @@ class ReviewListScreen extends Screen
      */
     public function query(): iterable
     {
+        $query = Review::query()->with(['user', 'appointment']);
+
+        if (auth()->user()->isDoctor()) {
+            $doctorId = auth()->user()->doctor->id;
+
+            $query->whereHas('appointment', function($q) use ($doctorId) {
+                $q->where('doctor_id', $doctorId);
+            });
+        }
+
         return [
-            'reviews' => Review::query()->with(['user','appointment'])->paginate(),
+            'reviews' => $query->paginate(),
         ];
     }
 

@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Orchid\Screens\User;
+namespace app\Orchid\Screens\User\Support;
 
+use App\Enums\RoleEnum;
+use App\Orchid\Layouts\User\Support\SupportListLayout;
 use App\Orchid\Layouts\User\UserEditLayout;
 use App\Orchid\Layouts\User\UserFiltersLayout;
 use App\Orchid\Layouts\User\UserListLayout;
@@ -15,7 +17,7 @@ use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
 use Orchid\Support\Facades\Toast;
 
-class UserListScreen extends Screen
+class SupportListScreen extends Screen
 {
     /**
      * Fetch data to be displayed on the screen.
@@ -25,7 +27,9 @@ class UserListScreen extends Screen
     public function query(): iterable
     {
         return [
-            'users' => User::with('roles')
+            'users' => User::whereHas('roles', function ($query) {
+                $query->where('roles.id', RoleEnum::SUPPORT->value);
+            })
                 ->filters(UserFiltersLayout::class)
                 ->defaultSort('id', 'desc')
                 ->paginate(),
@@ -37,7 +41,7 @@ class UserListScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'User Management';
+        return 'Управление поддержкой';
     }
 
     /**
@@ -45,7 +49,7 @@ class UserListScreen extends Screen
      */
     public function description(): ?string
     {
-        return 'A comprehensive list of all registered users, including their profiles and privileges.';
+        return 'Все сотрудники поддержки';
     }
 
     public function permission(): ?iterable
@@ -63,6 +67,9 @@ class UserListScreen extends Screen
     public function commandBar(): iterable
     {
         return [
+            Link::make(__('Add'))
+                ->icon('bs.plus-circle')
+                ->route('platform.support.create'),
         ];
     }
 
@@ -74,11 +81,7 @@ class UserListScreen extends Screen
     public function layout(): iterable
     {
         return [
-            UserFiltersLayout::class,
-            UserListLayout::class,
-
-            Layout::modal('editUserModal', UserEditLayout::class)
-                ->deferred('loadUserOnOpenModal'),
+            SupportListLayout::class,
         ];
     }
 

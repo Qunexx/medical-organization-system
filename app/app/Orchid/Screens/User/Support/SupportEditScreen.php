@@ -2,14 +2,19 @@
 
 declare(strict_types=1);
 
-namespace App\Orchid\Screens\User;
+namespace app\Orchid\Screens\User\Support;
 
+use App\Enums\RoleEnum;
+use App\Http\Requests\EditSupportRequest;
+use App\Models\Role;
 use App\Orchid\Layouts\Role\RolePermissionLayout;
+use App\Orchid\Layouts\User\Support\SupportEditLayout;
 use App\Orchid\Layouts\User\UserEditLayout;
 use App\Orchid\Layouts\User\UserPasswordLayout;
 use App\Orchid\Layouts\User\UserRoleLayout;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Orchid\Access\Impersonation;
@@ -21,7 +26,7 @@ use Orchid\Support\Color;
 use Orchid\Support\Facades\Layout;
 use Orchid\Support\Facades\Toast;
 
-class UserEditScreen extends Screen
+class SupportEditScreen extends Screen
 {
     /**
      * @var User
@@ -48,7 +53,7 @@ class UserEditScreen extends Screen
      */
     public function name(): ?string
     {
-        return $this->user->exists ? 'Edit User' : 'Create User';
+        return $this->user->exists ? 'Редактирование сотрудника поддержки' : 'Создание сотрудника поддержки';
     }
 
     /**
@@ -74,7 +79,6 @@ class UserEditScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-
             Button::make(__('Remove'))
                 ->icon('bs.trash3')
                 ->confirm(__('Once the account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.'))
@@ -93,62 +97,42 @@ class UserEditScreen extends Screen
     public function layout(): iterable
     {
         return [
-
-            Layout::block(UserEditLayout::class)
+            Layout::block(SupportEditLayout::class)
                 ->title(__('Profile Information'))
-                ->description(__('Update your account\'s profile information and email address.'))
-                ->commands(
-                    Button::make(__('Save'))
-                        ->type(Color::BASIC)
-                        ->icon('bs.check-circle')
-                        ->canSee($this->user->exists)
-                        ->method('save')
-                ),
-
-            Layout::block(UserPasswordLayout::class)
-                ->title(__('Password'))
-                ->description(__('Ensure your account is using a long, random password to stay secure.'))
-                ->commands(
-                    Button::make(__('Save'))
-                        ->type(Color::BASIC)
-                        ->icon('bs.check-circle')
-                        ->canSee($this->user->exists)
-                        ->method('save')
-                ),
+                ->description(__('Update your account\'s profile information and email address.')),
         ];
     }
 
     /**
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function save(User $user, Request $request)
+    public function save(EditSupportRequest $request, User $user)
     {
-        $request->validate([
-            'user.email' => [
-                'required',
-                Rule::unique(User::class, 'email')->ignore($user),
-            ],
-        ]);
+        $request->validated();
 
-        $permissions = collect($request->get('permissions'))
-            ->map(fn ($value, $key) => [base64_decode($key) => $value])
-            ->collapse()
-            ->toArray();
+        DB::transaction(function () use ($request, $user) {
+            $user =  $user ?? new User();
+            $userData = $request->input('user');
+            unset($userData['password']);
+            $user->fill($request->input('user'));
+            if (!$user->exists || $request->filled('user.password') || empty($user->password)) {
+                $user->password = Hash::make($request->input('user.password'));
+            }
+            $user->save();
 
-        $user->when($request->filled('user.password'), function (Builder $builder) use ($request) {
-            $builder->getModel()->password = Hash::make($request->input('user.password'));
+            if (!$user->hasRole(RoleEnum::SUPPORT)) {
+                $role = Role::firstOrCreate([
+                    'slug' => RoleEnum::SUPPORT->getLabel()
+                ], [
+                    'name' => RoleEnum::SUPPORT->getRussianLabel(),
+                    'permissions' => []
+                ]);
+                $user->addRole($role);
+            }
         });
 
-        $user
-            ->fill($request->collect('user')->except(['password', 'permissions', 'roles'])->toArray())
-            ->forceFill(['permissions' => $permissions])
-            ->save();
-
-        $user->replaceRoles($request->input('user.roles'));
-
-        Toast::info(__('User was saved.'));
-
-        return redirect()->route('platform.systems.users');
+        Toast::info($user->wasRecentlyCreated ? 'Сотрудник поддержки создан' : 'Данные обновлены');
+        return redirect()->route('platform.support');
     }
 
     /**

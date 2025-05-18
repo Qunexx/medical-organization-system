@@ -42,6 +42,8 @@ class RoleFactory extends Factory
             'slug' => 'doctor',
             'name' => 'Врач',
             'permissions' => [
+                "platform.index" => "1",
+                "platform.systems.users" => "1",
             ],
             'created_at' => now(),
             'updated_at' => now(),

@@ -95,6 +95,11 @@ class User extends Authenticatable
         return $this->role === RoleEnum::USER;
     }
 
+    public function isSupport(): bool
+    {
+        return $this->role === RoleEnum::SUPPORT;
+    }
+
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'role_users');

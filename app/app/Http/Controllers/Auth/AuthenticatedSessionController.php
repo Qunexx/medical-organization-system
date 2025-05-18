@@ -36,7 +36,7 @@ class AuthenticatedSessionController extends Controller
 
         $user = auth()->user();
 
-        if ($user->isAdmin()) {
+        if ($user->isAdmin() || $user->isDoctor() || $user->isSupport()) {
             return Inertia::location(route('platform.main'));
         }
 

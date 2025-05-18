@@ -74,12 +74,6 @@ class PatientEditScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            Button::make(__('Impersonate user'))
-                ->icon('bg.box-arrow-in-right')
-                ->confirm(__('You can revert to your original state by logging out.'))
-                ->method('loginAs')
-                ->canSee($this->user->exists && $this->user->id !== \request()->user()->id),
-
             Button::make(__('Remove'))
                 ->icon('bs.trash3')
                 ->confirm(__('Once the account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.'))

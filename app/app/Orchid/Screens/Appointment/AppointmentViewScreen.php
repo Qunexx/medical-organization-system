@@ -246,6 +246,10 @@ class AppointmentViewScreen extends Screen
 
     public function saveConclusion()
     {
+        if (auth()->user()->isSupport()) {
+            Toast::error('Не хватает прав');
+            return;
+        }
         $this->appointment->update([
             'conclusion' => request('conclusion')
         ]);
@@ -264,6 +268,10 @@ class AppointmentViewScreen extends Screen
 
     public function remove()
     {
+        if (auth()->user()->isSupport()) {
+            Toast::error('Не хватает прав');
+            return;
+        }
         $this->appointment->delete();
         Toast::info('Консультация удалена');
         return redirect()->route('platform.appointments.list');
