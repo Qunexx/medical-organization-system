@@ -1,5 +1,5 @@
 <template>
-    <section class="py-16 bg-white">
+    <section id="reviews" class="py-16 bg-white">
         <div class="container mx-auto px-4">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold text-gray-800 mb-4">Отзывы наших пациентов</h2>

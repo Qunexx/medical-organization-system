@@ -15,6 +15,15 @@
                     <Link :href="route('home') + '#doctors'" class="text-gray-700 hover:text-primary font-medium ">
                         Врачи
                     </Link>
+                    <Link :href="route('home') + '#appointment'" class="text-gray-700 hover:text-primary font-medium ">
+                        Запись на приём
+                    </Link>
+                    <Link :href="route('home') + '#reviews'" class="text-gray-700 hover:text-primary font-medium ">
+                        Отзывы
+                    </Link>
+                    <Link :href="route('home') + '#contacts'" class="text-gray-700 hover:text-primary font-medium ">
+                        Контакты
+                    </Link>
                 </nav>
             </div>
 
