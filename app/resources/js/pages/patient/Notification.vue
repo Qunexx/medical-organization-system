@@ -2,7 +2,7 @@
 <Head title="Уведомления" />
 <ProfileLayout>
 <template #header>
-    <h3 class="text-lg font-medium mb-4">Уведомления</h3>
+    <h3 class="text-lg font-medium mb-4 ml-6">Уведомления</h3>
 </template>
 
 <div class="py-12">

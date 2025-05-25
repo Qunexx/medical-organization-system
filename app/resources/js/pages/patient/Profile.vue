@@ -3,7 +3,7 @@
     <Head title="Профиль" />
     <ProfileLayout>
         <template #header>
-            <h3 class="text-lg font-medium mb-4">Профиль</h3>
+            <h3 class="text-lg font-medium mb-4 ml-6">Профиль</h3>
         </template>
 
         <div class="py-12">

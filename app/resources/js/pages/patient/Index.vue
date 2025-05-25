@@ -5,7 +5,7 @@
     <ProfileLayout>
         <template #header>
             <div class="space-y-2">
-                <h3 class="text-lg font-medium mb-4">Обзор</h3>
+                <h3 class="text-lg font-medium mb-4 ml-6">Обзор</h3>
             </div>
         </template>
 

@@ -2,7 +2,7 @@
 <Head title="Смена пароля" />
 <ProfileLayout>
 <template #header>
-    <h3 class="text-lg font-medium mb-4">Смена пароля</h3>
+    <h3 class="text-lg font-medium mb-4 ml-6">Смена пароля</h3>
 </template>
 
 <div class="py-12">

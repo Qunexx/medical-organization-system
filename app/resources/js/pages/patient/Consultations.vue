@@ -2,7 +2,7 @@
 <template>
     <ProfileLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight ml-6">
                 Мои записи
             </h2>
         </template>
