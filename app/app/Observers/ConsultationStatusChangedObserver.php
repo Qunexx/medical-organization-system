@@ -14,12 +14,14 @@ class ConsultationStatusChangedObserver
     public function created(Appointment $appointment): void
     {
         $appointment->sendCreationEmail();
+        $appointment->sendTelegramNotification($appointment,true);
     }
 
     public function updated(Appointment $appointment): void
     {
         if ($appointment->isDirty('status')) {
             $appointment->sendStatusEmail();
+            $appointment->sendTelegramNotification($appointment,false);
         }
     }
 }

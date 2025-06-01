@@ -41,6 +41,8 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
+            'access_email_notify' => true,
+            'access_telegram_notify' => true,
         ]);
         $role = Role::where('slug', RoleEnum::USER->getLabel())->first();
         $user->addRole($role);
