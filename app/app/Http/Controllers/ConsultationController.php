@@ -46,7 +46,7 @@ class ConsultationController extends Controller
             'specialization_id' => $specialization->id,
         ]);
 
-        return back()->with('success');
+        return redirect()->route('patient.appointment.view',$appointment);
     }
 
     public function show(Appointment $appointment)

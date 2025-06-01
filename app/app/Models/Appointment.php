@@ -2,13 +2,22 @@
 
 namespace App\Models;
 
+use App\Enums\ConsultationStatusesEnum;
+use App\Mail\ConsultationCreatedMail;
+use App\Mail\ConsultationStatusChangedMail;
+use App\Observers\ConsultationStatusChangedObserver;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Orchid\Filters\Filterable;
 use Orchid\Metrics\Chartable;
 use Orchid\Screen\AsSource;
 
+
+#[ObservedBy([ConsultationStatusChangedObserver::class])]
 class Appointment extends Model
 {
     use AsSource, Filterable, Chartable;
@@ -67,6 +76,28 @@ class Appointment extends Model
 
         if ($existing) {
             $fail('Это время уже занято');
+        }
+    }
+
+    public function sendCreationEmail(): void
+    {
+        try {
+            Mail::to($this->patient_email)
+                ->send(new ConsultationCreatedMail($this));
+        } catch (\Exception $e) {
+            Log::error("Ошибка отправки письма о создании консультации {$this->id}: " . $e->getMessage());
+        }
+    }
+
+    public function sendStatusEmail(): void
+    {
+        try {
+            if ($this->status !== ConsultationStatusesEnum::UNCONFIRMED->value) {
+                Mail::to($this->patient_email)
+                    ->send(new ConsultationStatusChangedMail($this));
+            }
+        } catch (\Exception $e) {
+            Log::error("Ошибка отправки письма для консультации {$this->id}: " . $e->getMessage());
         }
     }
 

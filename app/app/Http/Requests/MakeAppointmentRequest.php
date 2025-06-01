@@ -12,7 +12,7 @@ class MakeAppointmentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return auth()->check();
     }
 
     /**
@@ -22,7 +22,6 @@ class MakeAppointmentRequest extends FormRequest
      */
     public function rules(): array
     {
-        $request = $this->request();
         return [
             'doctor_id' => 'required|exists:doctors,id',
             'date' => [
