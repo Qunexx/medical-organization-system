@@ -4,22 +4,24 @@ namespace App\Http\Controllers;
 
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TelegramController extends Controller
 {
     //curl "https://api.telegram.org/bot<token>/setWebhook?url=https://my-laravel-site.com/telegram/webhook"
     public function handleWebhook(Request $request)
     {
+        Log::info('Webhook received:', $request->all());
         $data = $request->all();
-        if (isset($data['message']['text']) && $data['message']['text'] === '/start') {
+        if (isset($data['message']['text']) || $data['message']['text'] === '/start') {
             $chatId = $data['message']['chat']['id'];
-            $this->sendMessage($chatId, "Ваш chat_id: `$chatId`");
+            $this->sendMessage($chatId, "Ваш <b>chat_id</b>: <code>$chatId</code>", 'HTML');
         }
 
         return response()->json(['status' => 'success']);
     }
 
-    private function sendMessage($chatId, $text)
+    private function sendMessage($chatId, $text, $parse)
     {
         $client = new Client();
         $token = env('TELEGRAM_BOT_TOKEN');
@@ -28,7 +30,7 @@ class TelegramController extends Controller
             'json' => [
                 'chat_id' => $chatId,
                 'text' => $text,
-                'parse_mode' => 'Markdown'
+                'parse_mode' => $parse
             ]
         ]);
     }

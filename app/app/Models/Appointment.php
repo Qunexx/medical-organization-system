@@ -115,7 +115,7 @@ class Appointment extends Model
         if ($userTelegram && $telegramAccess) {
             try {
                 Notification::route('telegram', $userTelegram)
-                    ->notify(new TelegramConsultationNotification($appointment, $isCreated, $userTelegram));
+                    ->notify(new TelegramConsultationNotification($appointment, $userTelegram, $isCreated));
             } catch (\Exception $e) {
                 Log::error("Ошибка отправки Telegram уведомления для консультации {$appointment->id}: " . $e->getMessage());
             }

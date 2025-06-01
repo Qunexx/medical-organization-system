@@ -14,8 +14,10 @@ class TelegramConsultationNotification extends Notification
 {
     use Queueable;
 
-    public function __construct(public Appointment $appointment, public string $userTelegram, public bool $isCreated = false, )
+    public $statusLabel;
+    public function __construct(public Appointment $appointment, public string $userTelegram, public bool $isCreated = false)
     {
+        $this->statusLabel = ConsultationStatusesEnum::from($this->appointment->status->value)->getLabel();
     }
 
     public function via($notifiable): array
@@ -41,7 +43,7 @@ class TelegramConsultationNotification extends Notification
             ->content("*Создана новая консультация!*")
             ->line("Здравствуйте, {$this->appointment->patient_name}!")
             ->line("Ваша консультация успешно создана.")
-            ->line("Текущий статус: *{$this->appointment->status->getLabel()}*")
+            ->line("Текущий статус: *{$this->statusLabel}*")
             ->line("Мы уведомим вас о изменении статуса:")
             ->line("- По электронной почте")
             ->line("- По телефону: {$this->appointment->patient_phone}")
@@ -58,7 +60,7 @@ class TelegramConsultationNotification extends Notification
     protected function buildStatusChangedMessage(string $url): TelegramMessage
     {
         $message = TelegramMessage::create()
-            ->to('@' .$this->userTelegram)
+            ->to($this->userTelegram)
             ->content(" *Изменение статуса консультации*")
             ->line("Здравствуйте, {$this->appointment->patient_name}!")
             ->line("Статус вашей консультации изменен на: *{$this->appointment->status->getLabel()}*");
