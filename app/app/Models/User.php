@@ -27,9 +27,11 @@ class User extends Authenticatable
         'address_id',
         'phone',
         'birthday',
-        'telegram_account',
+        'chat_id',
         'email',
         'password',
+        'access_email_notify',
+        'access_telegram_notify',
     ];
 
     /**

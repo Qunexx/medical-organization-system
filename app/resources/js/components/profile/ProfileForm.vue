@@ -12,16 +12,24 @@
 
         <div>
             <label class="block font-medium text-sm text-gray-700 mb-2 flex justify-between items-center">
-                Telegram ID
-                <Link :href="route('patient.notification')" class="ml-4 whitespace-nowrap">Настроить уведомления →</Link>
+                ID telegram chat полученный из диалога с ботом:
+                <a
+                    :href="telegramBotUrl"
+                    target="_blank"
+                    class="ml-4 whitespace-nowrap text-blue-600 hover:text-blue-800 transition-colors flex items-center"
+                >
+                    Настроить уведомления
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                    </svg>
+                </a>
             </label>
             <div class="relative">
-                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">@</span>
                 <input
                     type="text"
                     class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm"
-                    v-model="form.telegram_account"
-                    placeholder="username"
+                    v-model="form.chat_id"
+                    placeholder="chat_id"
                 />
             </div>
         </div>
@@ -67,10 +75,10 @@ import { usePage } from '@inertiajs/vue3';
 
 const page = usePage();
 const showSuccessMessage = ref(false);
-
+const telegramBotUrl = page.props.telegram_bot_url;
 const form = useForm({
     birthday: formatDate(page.props.auth.user.birthday),
-    telegram_account: page.props.auth.user.telegram_account || ''
+    chat_id: page.props.auth.user.chat_id || ''
 });
 
 function formatDate(dateString?: string) {

@@ -10,6 +10,7 @@
         <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
             <NotificationSettings
                 :settings="settings"
+                :telegram_bot_url="telegram_bot_url"
                 class="max-w-xl"
             />
         </div>
@@ -26,6 +27,7 @@ import {Head} from "@inertiajs/vue3";
 defineProps({
     user: Object,
     status: String,
-    settings: Object
+    settings: Object,
+    telegram_bot_url: String
 });
 </script>

@@ -9,6 +9,7 @@ use App\Http\Requests\MainProfileUpdateRequest;
 use App\Http\Requests\NotificationChangeRequest;
 use App\Models\Avatar;
 use App\Models\User;
+use http\Env;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -38,13 +39,14 @@ class PatientController extends Controller
                 'middle_name' => $user->middle_name,
                 'phone' => $user->phone,
                 'birthday' => $user->birthday,
-                'telegram_account' => $user->telegram_account,
+                'chat_id' => $user->chat_id,
             ],
             'avatar_url' => Storage::url($user->avatar?->url) ?? '',
             'settings' => [
                 'access_email_notify' => $user->access_email_notify,
                 'access_telegram_notify' => $user->access_telegram_notify
             ],
+            'telegram_bot_url' => env('TELEGRAM_BOT_URL'),
             'status' => session('status')
         ]);
     }
@@ -77,7 +79,6 @@ class PatientController extends Controller
     public function mainProfileUpdate(MainProfileUpdateRequest $request)
     {
         $validated = $request->validated();
-
         auth()->user()->update($validated);
 
         return back()->with('success', 'Профиль успешно обновлён');
@@ -161,7 +162,8 @@ class PatientController extends Controller
                 'access_email_notify' => $user->access_email_notify,
                 'access_telegram_notify' => $user->access_telegram_notify
             ],
-            'status' => session('status')
+            'status' => session('status'),
+            'telegram_bot_url' => env('TELEGRAM_BOT_URL'),
         ]);
     }
 }

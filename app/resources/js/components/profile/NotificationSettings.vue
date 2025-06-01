@@ -16,6 +16,21 @@
             </div>
             <ToggleSwitch v-model="form.access_telegram_notify" />
         </div>
+        <p class="font-medium">Для работы Telegram-уведомлений:</p>
+        <ol class="list-decimal list-inside mt-1 space-y-1">
+            <li>
+                <a :href="telegramBotUrl" target="_blank" class="text-blue-600 underline hover:text-blue-800">
+                    Начните чат с нашим ботом
+                </a>
+            </li>
+            <li>Скопируйте ваш <code class="bg-blue-100 px-1 rounded">chat_id</code> из ответа бота</li>
+            <li>
+                Введите его в
+                <a :href="route('patient.profile')" class="text-blue-600 underline hover:text-blue-800">
+                    в графу ID telegram chat
+                </a>
+            </li>
+        </ol>
 
         <div class="pt-4">
             <button
@@ -44,10 +59,12 @@ import ToggleSwitch from '../../components/ToggleSwitch.vue';
 import {ref} from "vue";
 
 const props = defineProps({
-    settings: Object
+    settings: Object,
+    telegram_bot_url: String
 });
 const showSuccessMessage = ref(false);
 
+const telegramBotUrl = props.telegram_bot_url;
 const form = useForm({
     access_email_notify: props.settings.access_email_notify,
     access_telegram_notify: props.settings.access_telegram_notify

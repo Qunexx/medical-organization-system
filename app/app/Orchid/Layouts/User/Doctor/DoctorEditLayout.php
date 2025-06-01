@@ -42,10 +42,6 @@ class DoctorEditLayout extends Rows
                 ->title('Дата рождения')
                 ->format('Y-m-d'),
 
-            Input::make('user.telegram_account')
-                ->title('Telegram аккаунт')
-                ->placeholder('@username'),
-
             Input::make('user.email')
                 ->type('email')
                 ->title('Email')

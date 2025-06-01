@@ -47,10 +47,6 @@ class SupportEditLayout extends Rows
                 ->title('Отчество')
                 ->placeholder('Отчество'),
 
-            Input::make('user.telegram_account')
-                ->title('Telegram аккаунт')
-                ->placeholder('@username'),
-
             Input::make('user.email')
                 ->type('email')
                 ->required()

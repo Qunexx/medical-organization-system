@@ -24,10 +24,9 @@ class AdditionalProfileUpdateRequest extends FormRequest
     {
         return [
                 'birthday' => 'nullable|date',
-                'telegram_account' => [
+                'chat_id' => [
                     'nullable',
-                    'string',
-                    'max:255',
+                    'numeric',
                     Rule::unique('users')->ignore(auth()->user()->id)
                 ]
             ];
@@ -37,9 +36,8 @@ class AdditionalProfileUpdateRequest extends FormRequest
     {
         return [
             'birthday.date' => 'Неверный формат даты рождения.',
-            'telegram_account.string' => 'Телеграм аккаунт должен быть строкой.',
-            'telegram_account.max' => 'Телеграм аккаунт не должен превышать 255 символов.',
-            'telegram_account.unique' => 'Этот телеграм аккаунт уже используется.'
+            'chat_id.numeric' => 'Чат айди должен быть числом',
+            'chat_id.unique' => 'Этот телеграм аккаунт уже используется.'
         ];
     }
 
@@ -47,7 +45,7 @@ class AdditionalProfileUpdateRequest extends FormRequest
     {
         return [
             'birthday' => 'Дата рождения',
-            'telegram_account' => 'Телеграм аккаунт'
+            'chat_id' => 'Телеграм чат id'
         ];
     }
 }
