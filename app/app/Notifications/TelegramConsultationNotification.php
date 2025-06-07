@@ -50,7 +50,7 @@ class TelegramConsultationNotification extends Notification
             ->line("")
             ->line("Детали консультации:")
             ->line("- Специализация: {$this->appointment->specialization->name}")
-            ->line("- Врач: {$this->appointment->doctor->full_name}")
+            ->line("- Врач: {$this->appointment->doctor->user->full_name}")
             ->line("- Дата создания: {$this->appointment->created_at}")
             ->line("- Ваш комментарий: {$this->appointment->patient_comment}")
             ->button('Посмотреть консультацию', $url)
