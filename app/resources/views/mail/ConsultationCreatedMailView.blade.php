@@ -22,7 +22,7 @@
 <p>Детали консультации:</p>
 <ul>
     <li><strong>Специализация:</strong> {{ $appointment->specialization->name ?? 'Не указана' }}</li>
-    <li><strong>Врач:</strong> {{ $appointment->doctor->name ?? 'Будет назначен' }}</li>
+    <li><strong>Врач:</strong> {{ $appointment->doctor->full_name }}</li>
     <li><strong>Дата создания:</strong> {{ $appointment->created_at->format('d.m.Y H:i') }}</li>
     <li><strong>Ваш комментарий:</strong> {{ $appointment->patient_comment ?? 'не указан' }}</li>
 </ul>

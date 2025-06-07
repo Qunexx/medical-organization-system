@@ -17,7 +17,7 @@ class TelegramConsultationNotification extends Notification
     public $statusLabel;
     public function __construct(public Appointment $appointment, public string $userTelegram, public bool $isCreated)
     {
-        $this->statusLabel = ConsultationStatusesEnum::from($this->appointment->status->value)->getLabel();
+        $this->statusLabel = ConsultationStatusesEnum::from($this->appointment->status)->getLabel();
     }
 
     public function via($notifiable): array
@@ -50,7 +50,7 @@ class TelegramConsultationNotification extends Notification
             ->line("")
             ->line("Детали консультации:")
             ->line("- Специализация: {$this->appointment->specialization->name}")
-            ->line("- Врач: {$this->appointment->doctor->name}")
+            ->line("- Врач: {$this->appointment->doctor->full_name}")
             ->line("- Дата создания: {$this->appointment->created_at}")
             ->line("- Ваш комментарий: {$this->appointment->patient_comment}")
             ->button('Посмотреть консультацию', $url)
