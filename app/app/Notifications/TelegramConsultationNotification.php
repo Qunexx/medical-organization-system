@@ -29,7 +29,7 @@ class TelegramConsultationNotification extends Notification
     {
         $url = route('patient.appointment.view', $this->appointment);
 
-        if ($this->isCreated) {
+        if ($this->isCreated === true) {
             return $this->buildCreatedMessage($url);
         }
 
@@ -40,7 +40,6 @@ class TelegramConsultationNotification extends Notification
     {
         return TelegramMessage::create()
             ->to($this->userTelegram)
-            ->content("*Создана новая консультация!*")
             ->line("Здравствуйте, {$this->appointment->patient_name}!")
             ->line("Ваша консультация успешно создана.")
             ->line("Текущий статус: *{$this->statusLabel}*")
@@ -54,14 +53,14 @@ class TelegramConsultationNotification extends Notification
             ->line("- Врач: {$this->appointment->doctor->name}")
             ->line("- Дата создания: {$this->appointment->created_at}")
             ->line("- Ваш комментарий: {$this->appointment->patient_comment}")
-            ->button('Посмотреть консультацию', $url);
+            ->button('Посмотреть консультацию', $url)
+            ->line("\n\nС уважением, \n*MedInformSystem Bot*");
     }
 
     protected function buildStatusChangedMessage(string $url): TelegramMessage
     {
         $message = TelegramMessage::create()
             ->to($this->userTelegram)
-            ->content(" *Изменение статуса консультации*")
             ->line("Здравствуйте, {$this->appointment->patient_name}!")
             ->line("Статус вашей консультации изменен на: *{$this->appointment->status->getLabel()}*");
 
@@ -77,6 +76,7 @@ class TelegramConsultationNotification extends Notification
             $message->line("Заключение врача: {$this->appointment->conclusion}");
         }
 
-        return $message->button('Посмотреть консультацию', $url);
+        return $message->button('Посмотреть консультацию', $url)
+            ->line("\n\nС уважением, \n*MedInformSystem Bot*");
     }
 }
