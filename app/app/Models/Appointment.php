@@ -16,6 +16,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Orchid\Filters\Filterable;
+use Orchid\Filters\Types\Like;
+use Orchid\Filters\Types\Where;
+use Orchid\Filters\Types\WhereDateStartEnd;
 use Orchid\Metrics\Chartable;
 use Orchid\Screen\AsSource;
 
@@ -42,6 +45,26 @@ class Appointment extends Model
         'conclusion',
         'specialization_id',
     ];
+
+    protected $allowedFilters = [
+        'id'         => Where::class,
+    ];
+
+    protected $allowedSorts = [
+        'id',
+        'user_id',
+        'doctor_id',
+        'appointment_date',
+        'status',
+        'patient_name',
+        'patient_phone',
+        'patient_email',
+        'patient_comment',
+        'cancel_reason',
+        'conclusion',
+        'specialization_id',
+    ];
+
 
     public function user()
     {

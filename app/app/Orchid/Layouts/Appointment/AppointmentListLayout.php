@@ -38,7 +38,6 @@ class AppointmentListLayout extends Table
                 ->align(TD::ALIGN_LEFT),
 
             TD::make('patient_name', 'Пациент')
-                ->filter(Input::make())
                 ->sort(),
 
             TD::make('doctor.user.last_name', 'Врач')
