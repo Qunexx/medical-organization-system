@@ -15,7 +15,7 @@ class TelegramConsultationNotification extends Notification
     use Queueable;
 
     public $statusLabel;
-    public function __construct(public Appointment $appointment, public string $userTelegram, public bool $isCreated = false)
+    public function __construct(public Appointment $appointment, public string $userTelegram, public bool $isCreated)
     {
         $this->statusLabel = ConsultationStatusesEnum::from($this->appointment->status->value)->getLabel();
     }
