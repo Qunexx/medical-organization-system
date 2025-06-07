@@ -16,11 +16,13 @@ class ConsultationStatusChangedMail extends Mailable
     use Queueable, SerializesModels;
 
     public $appointment;
+    public $statusLabel;
     public $consultationUrl;
 
     public function __construct(Appointment $appointment)
     {
         $this->appointment = $appointment;
+        $this->statusLabel = $this->appointment->status->getLabel();
         $this->consultationUrl = route('patient.appointment.view', $appointment);
     }
 

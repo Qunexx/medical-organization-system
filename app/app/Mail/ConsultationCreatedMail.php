@@ -22,6 +22,7 @@ class ConsultationCreatedMail extends Mailable
     public function __construct(Appointment $appointment)
     {
         $this->appointment = $appointment;
+        $this->statusLabel = ConsultationStatusesEnum::UNCONFIRMED->getLabel();
         $this->consultationUrl = route('patient.appointment.view', $appointment);
     }
 
